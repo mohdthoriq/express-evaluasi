@@ -18,11 +18,12 @@ export const getAll = (_req: Request, res: Response) => {
 export const getByCategory = (req: Request, res: Response) => {
     const { category } = req.params;
 
-    if (category !== "komik" && category !== "novel") {
-        return res.status(400).json({ message: "Kategori tidak valid" });
+    const filtered = books.filter(book => book.category === category);
+
+    if (filtered.length === 0) {
+        throw new Error(`Tidak ada buku di kategori '${category}'`);
     }
 
-    const filtered = books.filter(book => book.category === category);
 
     res.status(200).json({
         success: true,
@@ -72,8 +73,8 @@ export const search = (req: Request, res: Response) => {
 export const create = (req: Request, res: Response) => {
     const { judul, penulis, tahun, harga, category } = req.body;
 
-    if (category !== "komik" && category !== "novel") {
-        throw new Error("Kategori tidak valid");
+    if (!category) {
+        throw new Error("Kategori wajib diisi");
     }
 
     const exists = books.find(book => book.judul === judul && book.category === category);

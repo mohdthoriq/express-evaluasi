@@ -1,5 +1,5 @@
 export interface Books {
-    category: "komik" | "novel";
+    category: string;
     id: number;
     judul: string;
     penulis: string;
@@ -20,5 +20,12 @@ export let books: Books[] = [
     { category: "novel", id: 2, judul: "Bumi Manusia", penulis: "Pramoedya Ananta Toer", tahun: 1980, harga: 90000 },
     { category: "novel", id: 3, judul: "Ayat-Ayat Cinta", penulis: "Habiburrahman El Shirazy", tahun: 2004, harga: 80000 },
     { category: "novel", id: 4, judul: "Dilan 1990", penulis: "Pidi Baiq", tahun: 2014, harga: 75000 },
-    { category: "novel", id: 5, judul: "5cm", penulis: "Donny Dhirgantoro", tahun: 2005, harga: 70000 }
+    { category: "novel", id: 5, judul: "5cm", penulis: "Donny Dhirgantoro", tahun: 2005, harga: 70000 },
+
+    // Pendidikan
+    { category: "pendidikan", id: 1, judul: "Matematika Dasar", penulis: "Rina Sari", tahun: 2015, harga: 60000 },
+    { category: "pendidikan", id: 2, judul: "Fisika Modern", penulis: "Budi Santoso", tahun: 2016, harga: 65000 },
+    { category: "pendidikan", id: 3, judul: "Kimia Organik", penulis: "Siti Rahma", tahun: 2017, harga: 70000 },
+    { category: "pendidikan", id: 4, judul: "Biologi Terpadu", penulis: "Andi Wijaya", tahun: 2018, harga: 72000 },
+    { category: "pendidikan", id: 5, judul: "Sejarah Dunia", penulis: "Dewi Lestari", tahun: 2019, harga: 68000 }
 ];
