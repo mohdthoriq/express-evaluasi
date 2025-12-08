@@ -217,7 +217,7 @@ Copy code
       "request": {
         "method": "GET",
         "header": [],
-        "url": { "raw": "http://localhost:5000/:user/api/books", "host": ["http://localhost:5000"], "path": [":user","api","books"] }
+        "url": { "raw": "http://localhost:5000/:user/books", "host": ["http://localhost:5000"], "path": [":user","books"] }
       }
     },
     {
@@ -225,7 +225,7 @@ Copy code
       "request": {
         "method": "GET",
         "header": [],
-        "url": { "raw": "http://localhost:5000/:user/api/books/komik", "host": ["http://localhost:5000"], "path": [":user","api","books","komik"] }
+        "url": { "raw": "http://localhost:5000/:user/books/komik", "host": ["http://localhost:5000"], "path": [":user","api","books","komik"] }
       }
     },
     {
@@ -233,7 +233,7 @@ Copy code
       "request": {
         "method": "GET",
         "header": [],
-        "url": { "raw": "http://localhost:5000/:user/api/books/komik/1", "host": ["http://localhost:5000"], "path": [":user","api","books","komik","1"] }
+        "url": { "raw": "http://localhost:5000/:user/books/komik/1", "host": ["http://localhost:5000"], "path": [":user","books","komik","1"] }
       }
     },
     {
@@ -245,7 +245,7 @@ Copy code
           "mode": "raw",
           "raw": "{\n  \"judul\": \"Fantasi Baru\",\n  \"penulis\": \"Rick\",\n  \"tahun\": 2025,\n  \"harga\": 75000,\n  \"category\": \"fantasi\"\n}"
         },
-        "url": { "raw": "http://localhost:5000/:user/api/books", "host": ["http://localhost:5000"], "path": [":user","api","books"] }
+        "url": { "raw": "http://localhost:5000/:user/books", "host": ["http://localhost:5000"], "path": [":user","books"] }
       }
     },
     {
@@ -257,7 +257,7 @@ Copy code
           "mode": "raw",
           "raw": "{\n  \"judul\": \"Fantasi Baru Vol.2\",\n  \"penulis\": \"Rick\",\n  \"tahun\": 2025,\n  \"harga\": 80000\n}"
         },
-        "url": { "raw": "http://localhost:5000/:user/api/books/fantasi/1", "host": ["http://localhost:5000"], "path": [":user","api","books","fantasi","1"] }
+        "url": { "raw": "http://localhost:5000/:user/books/fantasi/1", "host": ["http://localhost:5000"], "path": [":user","books","fantasi","1"] }
       }
     },
     {
@@ -265,7 +265,7 @@ Copy code
       "request": {
         "method": "DELETE",
         "header": [],
-        "url": { "raw": "http://localhost:5000/:user/api/books/fantasi/1", "host": ["http://localhost:5000"], "path": [":user","api","books","fantasi","1"] }
+        "url": { "raw": "http://localhost:5000/:user/books/fantasi/1", "host": ["http://localhost:5000"], "path": [":user","books","fantasi","1"] }
       }
     }
   ]
