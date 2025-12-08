@@ -25,7 +25,7 @@ app.use(cors()) // Middleware biar bisa di akses dari frontend
 
 app.use(requestLogger)
 
-app.use('/auth', userRouter)
+app.use(userRouter)
 
 app.use(apiKeyValidate);
 
@@ -40,7 +40,7 @@ app.get('/', (_req: Request, res: Response) => {
     )
 })
 
-app.use('/:user/api/books',authValidate, productRouter)
+app.use('/:user/books',authValidate, productRouter)
 
 app.get(/.*/, (req: Request, res: Response) => {
     throw new Error(`Route ${req.originalUrl} tidak ada di API E-Commerce`);
