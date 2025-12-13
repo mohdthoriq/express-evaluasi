@@ -5,6 +5,8 @@ import helmet from "helmet";
 import { successResponse } from "./utils/response";
 import { errorHandler } from "./middlewares/error.handler";
 import productRouter from "./routes/product.routes";
+import bookRouter from "./routes/book.routes";
+import categoryRouter from "./routes/category.routes";
 import userRouter from "./routes/user.router";
 import { authValidate } from "./middlewares/user.validation";
 import { apiKeyValidate } from "./middlewares/api.key";
@@ -40,10 +42,11 @@ app.get('/', (_req: Request, res: Response) => {
     )
 })
 
-app.use('/:user/api/books',authValidate, productRouter)
+app.use('/:user/books',authValidate, bookRouter)
+app.use('/:user/categories',authValidate, categoryRouter)
 
 app.get(/.*/, (req: Request, res: Response) => {
-    throw new Error(`Route ${req.originalUrl} tidak ada di API E-Commerce`);
+    throw new Error(`Route ${req.originalUrl} tidak ada di API perpustakaan ini.`);
 })
 
 app.use(errorHandler)
