@@ -1,0 +1,9 @@
+model BorrowItem {
+  id             Int    @id @default(autoincrement())
+  borrowRecordId Int
+  bookId         String
+  quantity       Int
+
+  borrowRecord   BorrowRecord @relation(fields: [borrowRecordId], references: [id])
+  book           Book         @relation(fields: [bookId], references: [id])
+}

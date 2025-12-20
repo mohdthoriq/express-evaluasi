@@ -8,13 +8,16 @@ import productRouter from "./routes/product.routes";
 import bookRouter from "./routes/book.routes";
 import categoryRouter from "./routes/category.routes";
 import userRouter from "./routes/user.router";
-import { authValidate } from "./middlewares/user.validation";
-import { apiKeyValidate } from "./middlewares/api.key";
+import borrowRecordRouter from "./routes/borrowRecord.routes";
+import borrowItemRouter from "./routes/borrowItem.routes";
+import profileRouter from "./routes/profile.routes";
 import { requestLogger } from "./middlewares/logging.middleware";
+import { authenticate } from "./middlewares/auth.middleware";
 
 const app: Application = express()
 
 app.use(express.json())
+
 app.use(morgan('dev')) // Middleware logging HTTP request
 // `morgan('dev')`: Middleware logging HTTP request. Format 'dev' memberikan output yang ringkas dan berwarna,
 //                 sangat berguna saat pengembangan untuk melihat request yang masuk dan status responsnya.
@@ -24,12 +27,12 @@ app.use(helmet()) // Middleware keamanan header
 app.use(cors()) // Middleware biar bisa di akses dari frontend
 // `cors()`: Memungkinkan atau membatasi resource di server agar dapat diakses oleh domain lain (Cross-Origin Resource Sharing).
 //           Sangat penting untuk API yang akan diakses oleh frontend dari domain berbeda.
+app.use(express.static('public'))
+app.set('query parser', 'extended')
 
 app.use(requestLogger)
 
-app.use('/auth', userRouter)
-
-app.use(apiKeyValidate);
+app.use('/auth', userRouter);
 
 app.get('/', (_req: Request, res: Response) => {
     successResponse(
@@ -42,8 +45,11 @@ app.get('/', (_req: Request, res: Response) => {
     )
 })
 
-app.use('/:user/books',authValidate, bookRouter)
-app.use('/:user/categories',authValidate, categoryRouter)
+app.use('/api/books', bookRouter)
+app.use('/api/categories', categoryRouter)
+app.use("/api/borrows", authenticate, borrowRecordRouter)
+app.use("/api/borrow-items", authenticate, borrowItemRouter)
+app.use('/api/profile', profileRouter)
 
 app.get(/.*/, (req: Request, res: Response) => {
     throw new Error(`Route ${req.originalUrl} tidak ada di API perpustakaan ini.`);

@@ -4,6 +4,10 @@ model Book {
   author      String
   year        Int
   price       Int
+  image       String
+  stock       Int      @default(0)
+
+  item        BorrowItem[]
   categoryId  String
   category    Category @relation(fields: [categoryId], references: [id])
   createdAt   DateTime @default(now())

@@ -1,85 +1,66 @@
-import { getPrisma } from "../prisma";
+import * as categoryRepo from "../repositories/category.repository"
 
-const prisma = getPrisma()
+export const getAllCategories = async ({
+  page,
+  limit,
+}: {
+  page: number
+  limit: number
+}) => {
+  const skip = (page - 1) * limit
 
-export const getAllCategories = async () => {
-    const categories = await prisma.category.findMany({
-        where: {
-            deletedAt: null,
-        },
-        include: {
-            books: {
-                where: { deletedAt: null },
-            },
-        },
-    })
+  const { categories, total } = await categoryRepo.findAll({
+    skip,
+    take: limit
+  })
 
-    const total = categories.length
-
-    return { total, categories }
+  return {
+    total,
+    categories,
+  }
 }
+
 
 export const getCategoryById = async (id: string) => {
-    const category = await prisma.category.findFirst({
-        where: {
-            id,
-            deletedAt: null,
-        },
-        include: {
-            books: {
-                where: { deletedAt: null },
-            },
-        },
-    })
+  const category = await categoryRepo.findById(id)
 
-    if (!category) throw new Error("kategori tidak ditemukan")
+  if (!category) {
+    throw new Error("Kategori tidak ditemukan")
+  }
 
-    return category
+  return category
 }
 
-export const searchCategory = async(keyword?:string) => {
-    return await prisma.category.findMany({
-        where: {
-            deletedAt: null,
-            name: {
-                contains: keyword || "",
-                mode: "insensitive"
-            }
-        }
-    })
+export const createCategory = async (name: string) => {
+  if (!name) {
+    throw new Error("Nama kategori tidak boleh kosong")
+  }
+
+  return categoryRepo.create(name)
 }
 
-export const createCategory = async(name: string) => {
-    if (!name) throw new Error("nama kategori tidak boleh kosong")
+export const updateCategory = async (id: string, name: string) => {
+  if (!name) {
+    throw new Error("Nama kategori tidak boleh kosong")
+  }
 
-    return await prisma.category.create({
-        data: { name }
-    })
+  const exist = await categoryRepo.findById(id)
+  if (!exist) {
+    throw new Error("Kategori tidak ditemukan")
+  }
+
+  return categoryRepo.update(id, name)
 }
 
-export const updateCategory = async(id: string, name:string) => {
-    const exist = await prisma.category.findUnique({
-        where: { id }
-    })
+export const deleteCategory = async (id: string) => {
+  const exist = await categoryRepo.findById(id)
+  if (!exist) {
+    throw new Error("Kategori tidak ditemukan")
+  }
 
-    if (!exist) throw new Error("kategori tidak ditemukan")
+  if (exist.books && exist.books.length > 0) {
+    throw new Error("Kategori masih memiliki buku")
+  }
 
-    return await prisma.category.update({
-        where: { id },
-        data: { name }
-    })
+  return categoryRepo.softDelete(id)
 }
-
-export const deleteCategory = async(id: string) => {
-    const exist = await prisma.category.findUnique({
-        where: { id }
-    })
-
-    if (!exist) throw new Error("kategori tidak ditemukan")
-
-    return await prisma.category.update({
-        where: { id },
-        data: { deletedAt: new Date() }
-    })
-}
-
