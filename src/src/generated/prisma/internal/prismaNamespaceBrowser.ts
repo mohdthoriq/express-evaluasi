@@ -52,7 +52,11 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   Book: 'Book',
-  Category: 'Category'
+  BorrowItem: 'BorrowItem',
+  BorrowRecord: 'BorrowRecord',
+  Category: 'Category',
+  Profile: 'Profile',
+  User: 'User'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -77,6 +81,8 @@ export const BookScalarFieldEnum = {
   author: 'author',
   year: 'year',
   price: 'price',
+  image: 'image',
+  stock: 'stock',
   categoryId: 'categoryId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
@@ -84,6 +90,28 @@ export const BookScalarFieldEnum = {
 } as const
 
 export type BookScalarFieldEnum = (typeof BookScalarFieldEnum)[keyof typeof BookScalarFieldEnum]
+
+
+export const BorrowItemScalarFieldEnum = {
+  id: 'id',
+  borrowRecordId: 'borrowRecordId',
+  bookId: 'bookId',
+  quantity: 'quantity'
+} as const
+
+export type BorrowItemScalarFieldEnum = (typeof BorrowItemScalarFieldEnum)[keyof typeof BorrowItemScalarFieldEnum]
+
+
+export const BorrowRecordScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  borrowDate: 'borrowDate',
+  returnDate: 'returnDate',
+  status: 'status',
+  createdAt: 'createdAt'
+} as const
+
+export type BorrowRecordScalarFieldEnum = (typeof BorrowRecordScalarFieldEnum)[keyof typeof BorrowRecordScalarFieldEnum]
 
 
 export const CategoryScalarFieldEnum = {
@@ -95,6 +123,32 @@ export const CategoryScalarFieldEnum = {
 } as const
 
 export type CategoryScalarFieldEnum = (typeof CategoryScalarFieldEnum)[keyof typeof CategoryScalarFieldEnum]
+
+
+export const ProfileScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  gender: 'gender',
+  address: 'address',
+  profile_picture_url: 'profile_picture_url',
+  userId: 'userId'
+} as const
+
+export type ProfileScalarFieldEnum = (typeof ProfileScalarFieldEnum)[keyof typeof ProfileScalarFieldEnum]
+
+
+export const UserScalarFieldEnum = {
+  id: 'id',
+  username: 'username',
+  email: 'email',
+  password: 'password',
+  role: 'role',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
 export const SortOrder = {

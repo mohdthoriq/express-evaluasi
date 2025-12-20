@@ -1,94 +1,129 @@
-import { getPrisma } from "../prisma";
+import * as bookRepo from "../repositories/book.repository"
+import type { Prisma } from "../src/generated/prisma/client"
 
-const prisma = getPrisma()
+export const getAllBooks = async ({
+  page,
+  limit,
+  search,
+  sortBy,
+  sortOrder,
+}: {
+  page: number
+  limit: number
+  search?: string
+  sortBy?: string
+  sortOrder?: "asc" | "desc"
+}) => {
+  const skip = (page - 1) * limit
 
-export const getAllBooks = async() => {
-    const books = await prisma.book.findMany({
-        where: { deletedAt: null },
-        include: { category: true },
-    })
-    const total = books.length;
-    return { books, total }
-}
-   
+  const where: any = { deletedAt: null }
 
-export const getBookById = async(id: string) => {
-    const book =  await prisma.book.findFirst({
-        where: { id, deletedAt: null },
-        include: { category: true },
-    });
+  if (search) {
+    where.OR = [
+      { title: { contains: search, mode: "insensitive" } },
+      { author: { contains: search, mode: "insensitive" } },
+    ]
+  }
 
-    if(!book) {
-        throw new Error("Buku tidak ditemukan");
-    }
+  const orderBy: Prisma.BookOrderByWithRelationInput = sortBy
+    ? { [sortBy]: sortOrder || "desc" }
+    : { createdAt: "desc" }
 
-    return book;
-}
+  const { books, total } = await bookRepo.findAll({
+    skip,
+    take: limit,
+    where,
+    orderBy,
+  })
 
-export const searchBooks = async(keyword?: String, max_price?: String, min_price?: String) => {
-    const filters : any = { deletedAt: null };
-    if (keyword) {
-        filters.OR = [
-            { title: { contains: keyword, mode: "insensitive" } },
-            { author: { contains: keyword, mode: "insensitive" } },
-        ];
-    }
-
-    if (max_price || min_price) {
-        filters.price = {};
-        if (max_price) {
-            filters.price.lte = Number(max_price);
-        }
-        if (min_price) {
-            filters.price.gte = Number(min_price);
-        }
-    }
-    return await prisma.book.findMany({
-        where: filters,
-        include: { category: true },
-    });
+  return {
+    data: books,
+    total,
+    totalPages: Math.ceil(total / limit),
+    currentPage: page,
+  }
 }
 
-export const createBook = async(title: string, author: string, year: number, price: number, categoryId: string) => {
-    if (isNaN(price)) {
-        throw new Error("Harga harus berupa angka");
-    }
+export const getBookById = async (id: string) => {
+  const book = await bookRepo.findById(id)
 
-    if (isNaN(year) || year.toString().length !== 4) {
-        throw new Error("Tahun harus berupa angka 4 digit");
-    }
+  if (!book) {
+    throw new Error("Buku tidak ditemukan")
+  }
 
-    return await prisma.book.create({
-        data: {
-            title,
-            author,
-            year,
-            price,
-            categoryId,
-        }
-    })
+  return book
 }
 
-export const updateBook = async(id: string, data: any) => {
-    const exist = await prisma.book.findUnique({ where: { id, }, });
-    if (!exist) {
-        throw new Error("Buku tidak ditemukan");
-    }
+export const searchBooks = async (
+  keyword?: string,
+  min_price?: string,
+  max_price?: string
+) => {
+  const where: any = { deletedAt: null }
 
-    return await prisma.book.update({
-        where: { id },
-        data,
-    });
+  if (keyword) {
+    where.OR = [
+      { title: { contains: keyword, mode: "insensitive" } },
+      { author: { contains: keyword, mode: "insensitive" } },
+    ]
+  }
+
+  if (min_price || max_price) {
+    where.price = {}
+    if (min_price) where.price.gte = Number(min_price)
+    if (max_price) where.price.lte = Number(max_price)
+  }
+
+  return bookRepo.search(where)
 }
 
-export const deleteBook = async(id: string) => {
-    const exist = await prisma.book.findUnique({ where: { id, }, });
-    if (!exist) {
-        throw new Error("Buku tidak ditemukan");
-    }
+export const createBook = async ({
+  title,
+  author,
+  year,
+  price,
+  image,
+  categoryId,
+}: {
+  title: string
+  author: string
+  year: number
+  price: number
+  image: string
+  categoryId: string
+}) => {
+  if (isNaN(price)) {
+    throw new Error("Harga harus berupa angka")
+  }
 
-    await prisma.book.update({
-        where: { id },
-        data: { deletedAt: new Date() },
-    });
+  if (isNaN(year) || year.toString().length !== 4) {
+    throw new Error("Tahun harus 4 digit")
+  }
+
+  return bookRepo.create({
+    title,
+    author,
+    year,
+    price,
+    image,
+    categoryId,
+  })
+}
+
+export const updateBook = async (id: string, data: any) => {
+  const existing = await bookRepo.findById(id)
+  if (!existing) {
+    throw new Error("Buku tidak ditemukan")
+  }
+
+  return bookRepo.update(id, data)
+}
+
+export const deleteBook = async (id: string) => {
+  const existing = await bookRepo.findById(id)
+  if (!existing) {
+    throw new Error("Buku tidak ditemukan")
+  }
+
+  await bookRepo.softDelete(id)
 }

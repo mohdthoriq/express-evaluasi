@@ -2,17 +2,34 @@ import type { Request, Response } from "express";
 import * as book from "../services/book.service";
 import { successResponse } from "../utils/response";
 
-export const getAll = async(req: Request, res: Response) => {
-    const { books, total } = await book.getAllBooks();
+export const getAll = async (req: Request, res: Response) => {
+  const page = Number(req.query.page) || 1
+  const limit = Number(req.query.limit) || 10
+  const search = req.query.search as string
+  const sortBy = req.query.sortBy as string
+  const sortOrder = req.query.sortOrder as "asc" | "desc"
 
-    successResponse(
-        res,
-        "Daftar buku ditemukan",
-        {
-            jumlah: total,
-            data: books
-        }
-    )
+  const result = await book.getAllBooks({
+    page,
+    limit,
+    search,
+    sortBy,
+    sortOrder,
+  })
+
+  const pagination = {
+    page: result.currentPage,
+    limit,
+    total: result.total,
+    totalPages: result.totalPages,
+  }
+
+  successResponse(
+    res,
+    "Daftar buku ditemukan",
+    result.data,
+    pagination
+  )
 }
 
 export const getById = async(req: Request, res: Response) => {
@@ -29,30 +46,25 @@ export const getById = async(req: Request, res: Response) => {
     )
 }
 
-export const search = async(req: Request, res: Response) => {
-    const { name, max_price, min_price } = req.query;
-
-    const results = await book.searchBooks(
-        name?.toString(),
-        max_price?.toString(),
-        min_price?.toString()
-    )
-
-    successResponse(
-        res,
-        "Hasil pencarian ditemukan",
-        results,
-    )
-}
-
 export const create = async(req: Request, res: Response) => {
+    const file = req.file;
+    if (!file) throw new Error("image is required");
+
     const { title, author, year, price, categoryId } = req.body;
+
+    const imageURL = `/public/uploads/${file.filename}`
+
 
     if (!categoryId) throw new Error("Kategori harus diisi");
 
-    const result = await book.createBook(
-        title, author, year, price, categoryId
-    )
+    const result = await book.createBook({
+        title:String(title),
+        author: String(author), 
+        year : Number(year), 
+        price : Number(price), 
+        image : imageURL, 
+        categoryId : String(categoryId)
+})
 
     successResponse(
         res,

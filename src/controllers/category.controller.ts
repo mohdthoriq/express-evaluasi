@@ -3,16 +3,27 @@ import * as category from "../services/category.service";
 import { successResponse } from "../utils/response";
 
 export const getAll = async (req: Request, res: Response) => {
-    const { categories, total } = await category.getAllCategories();
+  const page = Number(req.query.page) || 1
+  const limit = Number(req.query.limit) || 10
 
-    successResponse(
-        res,
-        "Daftar kategori ditemukan",
-        {
-            jumlah: total,
-            data: categories
-        }
-    )
+  const result = await category.getAllCategories({
+    page,
+    limit
+  })
+
+  const pagination = {
+    page,
+    limit,
+    total: result.total,
+    totalPages: Math.ceil(result.total / limit),
+  }
+
+  successResponse(
+    res,
+    "Daftar kategori ditemukan",
+    result.categories,
+    pagination
+  )
 }
 
 export const getById = async (req: Request, res: Response) => {
@@ -39,18 +50,6 @@ export const create = async (req: Request, res: Response) => {
         res,
         "Kategori berhasil ditambahkan",
         result
-    )
-}
-
-export const search = async (req: Request, res: Response) => {
-    const { name } = req.query;
-
-    const results = await category.searchCategory(name?.toString());
-
-    successResponse(
-        res,
-        "Hasil pencarian ditemukan",
-        results,
     )
 }
 
