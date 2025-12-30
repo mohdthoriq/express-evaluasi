@@ -23,7 +23,7 @@ const controller = new BorrowRecordController(service)
 
 /**
  * @swagger
- * /borrow-records:
+ * /borrows:
  *   post:
  *     summary: Buat peminjaman baru
  *     tags: [BorrowRecord]
@@ -110,7 +110,7 @@ const controller = new BorrowRecordController(service)
 
 /**
  * @swagger
- * /borrow-records:
+ * /borrows:
  *   get:
  *     summary: Ambil semua peminjaman (admin)
  *     tags: [BorrowRecord]
