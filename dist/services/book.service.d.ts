@@ -1,4 +1,4 @@
-import type { Prisma } from "../generated/client";
+import type { Prisma } from "../generated";
 import type { BookRepository } from "../repositories/book.repository";
 export interface IBookService {
     getAllBooks(params: {

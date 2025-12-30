@@ -1,4 +1,4 @@
-import type { Prisma } from "../generated/client";
+import type { Prisma } from "../generated";
 import type { BorrowRecordRepository } from "../repositories/borrowRecord.repository";
 import type { BookRepository } from "../repositories/book.repository";
 export interface IBorrowRecordService {

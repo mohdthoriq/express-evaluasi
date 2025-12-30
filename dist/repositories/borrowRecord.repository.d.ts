@@ -1,4 +1,4 @@
-import type { Prisma, PrismaClient, BorrowRecord } from "../generated/client";
+import type { Prisma, PrismaClient, BorrowRecord } from "../generated";
 export interface IBorrowRecordRepository {
     createBorrowRecord(tx: Prisma.TransactionClient, data: {
         userId: number;
@@ -74,9 +74,7 @@ export declare class BorrowRecordRepository implements IBorrowRecordRepository {
         borrowDate: Date;
         returnDate: Date | null;
         status: string;
-    }, never, import("@prisma/client/runtime/client").DefaultArgs, {
-        omit: undefined;
-    }>;
+    }, never, import("../generated/runtime/client").DefaultArgs, Prisma.PrismaClientOptions>;
     findBorrowByIdTx(tx: Prisma.TransactionClient, borrowId: number): Prisma.Prisma__BorrowRecordClient<({
         items: {
             id: number;
@@ -91,9 +89,7 @@ export declare class BorrowRecordRepository implements IBorrowRecordRepository {
         borrowDate: Date;
         returnDate: Date | null;
         status: string;
-    }) | null, null, import("@prisma/client/runtime/client").DefaultArgs, {
-        omit: undefined;
-    }>;
+    }) | null, null, import("../generated/runtime/client").DefaultArgs, Prisma.PrismaClientOptions>;
     updateReturnDate(tx: Prisma.TransactionClient, borrowId: number): Prisma.Prisma__BorrowRecordClient<{
         id: number;
         createdAt: Date;
@@ -101,9 +97,7 @@ export declare class BorrowRecordRepository implements IBorrowRecordRepository {
         borrowDate: Date;
         returnDate: Date | null;
         status: string;
-    }, never, import("@prisma/client/runtime/client").DefaultArgs, {
-        omit: undefined;
-    }>;
+    }, never, import("../generated/runtime/client").DefaultArgs, Prisma.PrismaClientOptions>;
     findBorrowsByUserId(userId: number): Prisma.PrismaPromise<({
         items: ({
             book: {
@@ -216,9 +210,7 @@ export declare class BorrowRecordRepository implements IBorrowRecordRepository {
         borrowDate: Date;
         returnDate: Date | null;
         status: string;
-    }) | null, null, import("@prisma/client/runtime/client").DefaultArgs, {
-        omit: Prisma.GlobalOmitConfig | undefined;
-    }>;
+    }) | null, null, import("../generated/runtime/client").DefaultArgs, Prisma.PrismaClientOptions>;
     deleteById(borrowId: number, tx?: Prisma.TransactionClient): Prisma.Prisma__BorrowRecordClient<{
         id: number;
         createdAt: Date;
@@ -226,9 +218,7 @@ export declare class BorrowRecordRepository implements IBorrowRecordRepository {
         borrowDate: Date;
         returnDate: Date | null;
         status: string;
-    }, never, import("@prisma/client/runtime/client").DefaultArgs, {
-        omit: undefined;
-    }>;
+    }, never, import("../generated/runtime/client").DefaultArgs, Prisma.PrismaClientOptions>;
     getStats(): Promise<Prisma.GetBorrowRecordAggregateType<{
         _count: {
             id: true;

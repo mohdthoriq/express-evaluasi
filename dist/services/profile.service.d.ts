@@ -1,4 +1,4 @@
-import type { Profile, Prisma } from "../generated/client";
+import type { Profile, Prisma } from "../generated";
 import type { ProfileRepository } from "../repositories/profile.repository";
 export declare class ProfileService {
     private profileRepo;
