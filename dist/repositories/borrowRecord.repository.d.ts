@@ -1,46 +1,184 @@
-export declare const createBorrowRecord: (tx: any, data: {
-    userId: number;
-    items: {
-        bookId: string;
-        quantity: number;
-    }[];
-}) => any;
-export declare const findBorrowByIdTx: (tx: any, borrowId: number) => any;
-export declare const updateReturnDate: (tx: any, borrowId: number) => any;
-export declare const findBorrowsByUserId: (userId: number) => import("../src/generated/prisma/internal/prismaNamespace").PrismaPromise<({
-    items: ({
-        book: {
-            id: string;
-            title: string;
-            author: string;
-            year: number;
-            price: number;
-            image: string;
-            stock: number;
-            categoryId: string;
-            createdAt: Date;
-            updatedAt: Date;
-            deletedAt: Date | null;
+import type { Prisma, PrismaClient, BorrowRecord } from "../generated/client";
+export interface IBorrowRecordRepository {
+    createBorrowRecord(tx: Prisma.TransactionClient, data: {
+        userId: number;
+        items: {
+            bookId: string;
+            quantity: number;
+        }[];
+    }): Promise<BorrowRecord>;
+    findBorrowByIdTx(tx: Prisma.TransactionClient, borrowId: number): Promise<BorrowRecord | null>;
+    updateReturnDate(tx: Prisma.TransactionClient, borrowId: number): Promise<BorrowRecord>;
+    findBorrowsByUserId(userId: number): Promise<BorrowRecord[]>;
+    findAll(params: {
+        skip: number;
+        take: number;
+    }): Promise<{
+        items: BorrowRecord[];
+        total: number;
+    }>;
+    findById(id: number): Promise<BorrowRecord | null>;
+    deleteById(borrowId: number, tx?: Prisma.TransactionClient): Promise<BorrowRecord>;
+    getStats(): Promise<{
+        _count: {
+            id: number;
         };
+    }>;
+    getBorrowByUserStats(): Promise<{
+        userId: number;
+        _count: {
+            id: number;
+        };
+    }[]>;
+    getBorrowByReturnStatusStats(): Promise<{
+        returnDate: Date | null;
+        _count: {
+            id: number;
+        };
+    }[]>;
+}
+export declare class BorrowRecordRepository implements IBorrowRecordRepository {
+    private prisma;
+    constructor(prisma: PrismaClient);
+    createBorrowRecord(tx: Prisma.TransactionClient, data: {
+        userId: number;
+        items: {
+            bookId: string;
+            quantity: number;
+        }[];
+    }): Prisma.Prisma__BorrowRecordClient<{
+        items: ({
+            book: {
+                id: string;
+                title: string;
+                author: string;
+                year: number;
+                price: number;
+                categoryId: string;
+                image: string;
+                stock: number;
+                createdAt: Date;
+                updatedAt: Date;
+                deletedAt: Date | null;
+            };
+        } & {
+            id: number;
+            quantity: number;
+            borrowRecordId: number;
+            bookId: string;
+        })[];
     } & {
         id: number;
-        borrowRecordId: number;
-        bookId: string;
-        quantity: number;
-    })[];
-} & {
-    id: number;
-    createdAt: Date;
-    userId: number;
-    borrowDate: Date;
-    returnDate: Date | null;
-    status: string;
-})[]>;
-export declare const findAllBorrows: ({ skip, take, }: {
-    skip: number;
-    take: number;
-}) => Promise<{
-    items: ({
+        createdAt: Date;
+        userId: number;
+        borrowDate: Date;
+        returnDate: Date | null;
+        status: string;
+    }, never, import("@prisma/client/runtime/client").DefaultArgs, {
+        omit: undefined;
+    }>;
+    findBorrowByIdTx(tx: Prisma.TransactionClient, borrowId: number): Prisma.Prisma__BorrowRecordClient<({
+        items: {
+            id: number;
+            quantity: number;
+            borrowRecordId: number;
+            bookId: string;
+        }[];
+    } & {
+        id: number;
+        createdAt: Date;
+        userId: number;
+        borrowDate: Date;
+        returnDate: Date | null;
+        status: string;
+    }) | null, null, import("@prisma/client/runtime/client").DefaultArgs, {
+        omit: undefined;
+    }>;
+    updateReturnDate(tx: Prisma.TransactionClient, borrowId: number): Prisma.Prisma__BorrowRecordClient<{
+        id: number;
+        createdAt: Date;
+        userId: number;
+        borrowDate: Date;
+        returnDate: Date | null;
+        status: string;
+    }, never, import("@prisma/client/runtime/client").DefaultArgs, {
+        omit: undefined;
+    }>;
+    findBorrowsByUserId(userId: number): Prisma.PrismaPromise<({
+        items: ({
+            book: {
+                id: string;
+                title: string;
+                author: string;
+                year: number;
+                price: number;
+                categoryId: string;
+                image: string;
+                stock: number;
+                createdAt: Date;
+                updatedAt: Date;
+                deletedAt: Date | null;
+            };
+        } & {
+            id: number;
+            quantity: number;
+            borrowRecordId: number;
+            bookId: string;
+        })[];
+    } & {
+        id: number;
+        createdAt: Date;
+        userId: number;
+        borrowDate: Date;
+        returnDate: Date | null;
+        status: string;
+    })[]>;
+    findAll({ skip, take }: {
+        skip: number;
+        take: number;
+    }): Promise<{
+        items: ({
+            user: {
+                id: number;
+                createdAt: Date;
+                updatedAt: Date;
+                deletedAt: Date | null;
+                username: string;
+                email: string;
+                password: string;
+                role: string;
+            };
+            items: ({
+                book: {
+                    id: string;
+                    title: string;
+                    author: string;
+                    year: number;
+                    price: number;
+                    categoryId: string;
+                    image: string;
+                    stock: number;
+                    createdAt: Date;
+                    updatedAt: Date;
+                    deletedAt: Date | null;
+                };
+            } & {
+                id: number;
+                quantity: number;
+                borrowRecordId: number;
+                bookId: string;
+            })[];
+        } & {
+            id: number;
+            createdAt: Date;
+            userId: number;
+            borrowDate: Date;
+            returnDate: Date | null;
+            status: string;
+        })[];
+        total: number;
+    }>;
+    findById(id: number): Prisma.Prisma__BorrowRecordClient<({
         user: {
             id: number;
             createdAt: Date;
@@ -58,18 +196,18 @@ export declare const findAllBorrows: ({ skip, take, }: {
                 author: string;
                 year: number;
                 price: number;
+                categoryId: string;
                 image: string;
                 stock: number;
-                categoryId: string;
                 createdAt: Date;
                 updatedAt: Date;
                 deletedAt: Date | null;
             };
         } & {
             id: number;
+            quantity: number;
             borrowRecordId: number;
             bookId: string;
-            quantity: number;
         })[];
     } & {
         id: number;
@@ -78,56 +216,33 @@ export declare const findAllBorrows: ({ skip, take, }: {
         borrowDate: Date;
         returnDate: Date | null;
         status: string;
-    })[];
-    total: number;
-}>;
-export declare const findBorrowById: (id: number) => import("../src/generated/prisma/models").Prisma__BorrowRecordClient<({
-    user: {
+    }) | null, null, import("@prisma/client/runtime/client").DefaultArgs, {
+        omit: Prisma.GlobalOmitConfig | undefined;
+    }>;
+    deleteById(borrowId: number, tx?: Prisma.TransactionClient): Prisma.Prisma__BorrowRecordClient<{
         id: number;
         createdAt: Date;
-        updatedAt: Date;
-        deletedAt: Date | null;
-        username: string;
-        email: string;
-        password: string;
-        role: string;
-    };
-    items: ({
-        book: {
-            id: string;
-            title: string;
-            author: string;
-            year: number;
-            price: number;
-            image: string;
-            stock: number;
-            categoryId: string;
-            createdAt: Date;
-            updatedAt: Date;
-            deletedAt: Date | null;
+        userId: number;
+        borrowDate: Date;
+        returnDate: Date | null;
+        status: string;
+    }, never, import("@prisma/client/runtime/client").DefaultArgs, {
+        omit: undefined;
+    }>;
+    getStats(): Promise<Prisma.GetBorrowRecordAggregateType<{
+        _count: {
+            id: true;
         };
-    } & {
-        id: number;
-        borrowRecordId: number;
-        bookId: string;
-        quantity: number;
-    })[];
-} & {
-    id: number;
-    createdAt: Date;
-    userId: number;
-    borrowDate: Date;
-    returnDate: Date | null;
-    status: string;
-}) | null, null, import("@prisma/client/runtime/client").DefaultArgs, {
-    omit: import("../src/generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
-}>;
-export declare const deleteById: (borrowId: number, tx?: import("../src/generated/prisma/client").PrismaClient) => Promise<{
-    id: number;
-    createdAt: Date;
-    userId: number;
-    borrowDate: Date;
-    returnDate: Date | null;
-    status: string;
-}>;
+    }>>;
+    getBorrowByUserStats(): Promise<(Prisma.PickEnumerable<Prisma.BorrowRecordGroupByOutputType, "userId"[]> & {
+        _count: {
+            id: number;
+        };
+    })[]>;
+    getBorrowByReturnStatusStats(): Promise<(Prisma.PickEnumerable<Prisma.BorrowRecordGroupByOutputType, "returnDate"[]> & {
+        _count: {
+            id: number;
+        };
+    })[]>;
+}
 //# sourceMappingURL=borrowRecord.repository.d.ts.map

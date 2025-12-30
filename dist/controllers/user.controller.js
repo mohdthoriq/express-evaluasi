@@ -1,11 +1,16 @@
-import * as userService from "../services/user.service";
 import { successResponse } from "../utils/response";
-export const login = async (req, res) => {
-    const result = await userService.login(req.body);
-    successResponse(res, "Login berhasil", result);
-};
-export const register = async (req, res) => {
-    const result = await userService.register(req.body);
-    successResponse(res, "Registrasi berhasil", result, null, 201);
-};
+export class AuthController {
+    authService;
+    constructor(authService) {
+        this.authService = authService;
+    }
+    login = async (req, res) => {
+        const result = await this.authService.login(req.body);
+        successResponse(res, "Login berhasil", result);
+    };
+    register = async (req, res) => {
+        const result = await this.authService.register(req.body);
+        successResponse(res, "Registrasi berhasil", result, null, 201);
+    };
+}
 //# sourceMappingURL=user.controller.js.map

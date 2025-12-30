@@ -1,15 +1,22 @@
 import { Router } from "express";
-import * as book from "../controllers/book.controller";
 import { validate } from "../middlewares/product.validation";
 import { createBookValidation, getBookByIdValidation, updateBookValidation } from "../validations/book.validation";
 import { authenticate } from "../middlewares/auth.middleware";
 import { upload } from "../middlewares/upload.middleware";
 import { adminOnly } from "../middlewares/role.middleware";
+import { BookRepository } from "../repositories/book.repository";
+import { BookService } from "../services/book.service";
+import { BookController } from "../controllers/book.controller";
+import { PrismaInstance } from "../database";
 const router = Router();
-router.get('/', book.getAll);
-router.get('/:id', validate(getBookByIdValidation), book.getById);
-router.post('/', authenticate, upload.single('image'), adminOnly, validate(createBookValidation), book.create);
-router.put('/:id', adminOnly, upload.single('image'), validate(updateBookValidation), book.update);
-router.delete('/:id', adminOnly, book.remove);
+const repo = new BookRepository(PrismaInstance);
+const service = new BookService(repo);
+const controller = new BookController(service);
+router.get('/', controller.getAll);
+router.get('/:id', validate(getBookByIdValidation), controller.getById);
+router.get("/stats", authenticate, adminOnly, controller.getStats);
+router.post('/', authenticate, upload.single('image'), adminOnly, validate(createBookValidation), controller.create);
+router.put('/:id', adminOnly, upload.single('image'), validate(updateBookValidation), controller.update);
+router.delete('/:id', adminOnly, controller.remove);
 export default router;
 //# sourceMappingURL=book.routes.js.map

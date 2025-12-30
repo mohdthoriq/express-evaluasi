@@ -1,59 +1,71 @@
-import * as userRepo from "../repositories/user.repository"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import config from "../utils/env"
+import type { UserRepository } from "../repositories/user.repository"
 
-export const register = async (data: {
-  username: string
-  email: string
-  password: string
-  role?: string
-}) => {
-   if (!data.username) {
-    throw new Error("username wajib diisi")
-  }
-  if (!data.email) {
-    throw new Error("email wajib diisi")
-  }
-  if (!data.password) {
-    throw new Error("password wajib diisi")
-  }
+export interface IAuthService {
+  register(data: {
+    username: string
+    email: string
+    password: string
+    role?: string
+  }): Promise<any>
 
-  const existing = await userRepo.findByEmail(data.email)
-  if (existing) {
-    throw new Error("Email sudah terdaftar")
-  }
-
-  const hashedPassword = await bcrypt.hash(data.password, 10)
-
-  return userRepo.create({
-    username: data.username,
-    email: data.email,
-    password: hashedPassword,
-    role: data.role || "USER"
-  })
+  login(data: {
+    email: string
+    password: string
+  }): Promise<{ user: any; token: string }>
 }
 
-export const login = async (data: { email: string; password: string }) => {
-  if (!data.email || !data.password) {
-    throw new Error("Email dan password wajib diisi")
+export class AuthService implements IAuthService {
+  constructor(private userRepo: UserRepository) {}
+
+  async register(data: {
+    username: string
+    email: string
+    password: string
+    role?: string
+  }) {
+    if (!data.username) throw new Error("username wajib diisi")
+    if (!data.email) throw new Error("email wajib diisi")
+    if (!data.password) throw new Error("password wajib diisi")
+
+    const existing = await this.userRepo.findByEmail(data.email)
+    if (existing) {
+      throw new Error("Email sudah terdaftar")
+    }
+
+    const hashedPassword = await bcrypt.hash(data.password, 10)
+
+    return this.userRepo.create({
+      username: data.username,
+      email: data.email,
+      password: hashedPassword,
+      role: data.role || "USER",
+    })
   }
 
-  const user = await userRepo.findByEmail(data.email)
-  if (!user) {
-    throw new Error("Email atau password salah")
+  async login(data: { email: string; password: string }) {
+    if (!data.email || !data.password) {
+      throw new Error("Email dan password wajib diisi")
+    }
+
+    const user = await this.userRepo.findByEmail(data.email)
+    if (!user) {
+      throw new Error("Email atau password salah")
+    }
+
+    const isValid = await bcrypt.compare(data.password, user.password)
+    if (!isValid) {
+      throw new Error("Email atau password salah")
+    }
+
+    const token = jwt.sign(
+      { id: user.id, role: user.role },
+      config.JWT_SECRET,
+      { expiresIn: "1h" }
+    )
+
+    return { user, token }
   }
-
-  const isValid = await bcrypt.compare(data.password, user.password)
-  if (!isValid) {
-    throw new Error("Email atau password salah")
-  }
-
-  const token = jwt.sign(
-    { id: user.id, role: user.role },
-    config.JWT_SECRET,
-    { expiresIn: "1h" }
-  )
-
-  return { user, token }
 }

@@ -1,15 +1,19 @@
-import type { Request, Response } from "express";
-import * as userService from "../services/user.service";
-import { successResponse } from "../utils/response";
+import type { Request, Response } from "express"
+import { successResponse } from "../utils/response"
+import type { AuthService } from "../services/user.service"
 
-export const login = async (req: Request, res: Response) => {
-    const result = await userService.login(req.body);
+export class AuthController {
+  constructor(private authService: AuthService) {}
 
-    successResponse(res, "Login berhasil", result);
-}
+  login = async (req: Request, res: Response) => {
+    const result = await this.authService.login(req.body)
 
-export const register = async (req: Request, res: Response) => {
-    const result = await userService.register(req.body);
+    successResponse(res, "Login berhasil", result)
+  }
 
-    successResponse(res, "Registrasi berhasil", result, null, 201);
+  register = async (req: Request, res: Response) => {
+    const result = await this.authService.register(req.body)
+
+    successResponse(res, "Registrasi berhasil", result, null, 201)
+  }
 }

@@ -1,97 +1,92 @@
 import type { Request, Response } from "express";
-import * as book from "../services/book.service";
+import type { IBookService } from "../services/book.service";
 import { successResponse } from "../utils/response";
 
-export const getAll = async (req: Request, res: Response) => {
-  const page = Number(req.query.page) || 1
-  const limit = Number(req.query.limit) || 10
-  const search = req.query.search as string
-  const sortBy = req.query.sortBy as string
-  const sortOrder = req.query.sortOrder as "asc" | "desc"
+export class BookController {
+  constructor(private bookService: IBookService) {}
 
-  const result = await book.getAllBooks({
-    page,
-    limit,
-    search,
-    sortBy,
-    sortOrder,
-  })
+  getAll = async (req: Request, res: Response) => {
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+    const search = req.query.search as string;
+    const sortBy = req.query.sortBy as string;
+    const sortOrder = req.query.sortOrder as "asc" | "desc";
 
-  const pagination = {
-    page: result.currentPage,
-    limit,
-    total: result.total,
-    totalPages: result.totalPages,
-  }
+    const result = await this.bookService.getAllBooks({
+      page,
+      limit,
+      search,
+      sortBy,
+      sortOrder,
+    });
 
-  successResponse(
-    res,
-    "Daftar buku ditemukan",
-    result.data,
-    pagination
-  )
-}
+    successResponse(res, "Daftar buku ditemukan", result.data, {
+      page: result.currentPage,
+      limit,
+      total: result.total,
+      totalPages: result.totalPages,
+    });
+  };
 
-export const getById = async(req: Request, res: Response) => {
+  getById = async (req: Request, res: Response) => {
     if (!req.params.id) {
-        throw new Error("ID tidak ditemukan");
+      throw new Error("ID tidak ditemukan");
     }
 
-    const product = await book.getBookById(req.params.id);
+    const book = await this.bookService.getBookById(req.params.id);
 
-    successResponse(
-        res,
-        "Buku ditemukan",
-        product
-    )
-}
+    successResponse(res, "Buku ditemukan", book);
+  };
 
-export const create = async(req: Request, res: Response) => {
+  create = async (req: Request, res: Response) => {
     const file = req.file;
     if (!file) throw new Error("image is required");
 
     const { title, author, year, price, categoryId } = req.body;
-
-    const imageURL = `/public/uploads/${file.filename}`
-
-
     if (!categoryId) throw new Error("Kategori harus diisi");
 
-    const result = await book.createBook({
-        title:String(title),
-        author: String(author), 
-        year : Number(year), 
-        price : Number(price), 
-        image : imageURL, 
-        categoryId : String(categoryId)
-})
+    const imageURL = `/public/uploads/${file.filename}`;
 
-    successResponse(
-        res,
-        "Buku berhasil ditambahkan",
-        result,
-    )
-}
+    const result = await this.bookService.createBook({
+      title: String(title),
+      author: String(author),
+      year: Number(year),
+      price: Number(price),
+      image: imageURL,
+      categoryId: String(categoryId),
+    });
 
-export const update = async(req: Request, res: Response) => {
+    successResponse(res, "Buku berhasil ditambahkan", result);
+  };
+
+  update = async (req: Request, res: Response) => {
     if (!req.params.id) {
-        throw new Error("ID tidak ditemukan");
+      throw new Error("ID tidak ditemukan");
     }
 
-    const result = await book.updateBook(req.params.id!, req.body);
+    const result = await this.bookService.updateBook(
+      req.params.id,
+      req.body
+    );
+
+    successResponse(res, "Buku berhasil diperbarui", result);
+  };
+
+  remove = async (req: Request, res: Response) => {
+    await this.bookService.deleteBook(req.params.id!);
+
+    successResponse(res, "Buku berhasil dihapus");
+  };
+
+   getStats = async (req: Request, res: Response) => {
+    const stats = await this.bookService.exec()
 
     successResponse(
-        res, "Buku berhasil diperbarui", result
+      res,
+      "Success",
+      stats,
+      null,
+      200
     )
+  }
 }
-
-export const remove = async(req: Request, res: Response) => {
-    const deleted = await book.deleteBook(req.params.id!);
-
-    successResponse(
-        res,
-        "Buku berhasil dihapus",
-        deleted,
-    )
-}
-

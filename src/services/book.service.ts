@@ -1,129 +1,151 @@
-import * as bookRepo from "../repositories/book.repository"
-import type { Prisma } from "../src/generated/prisma/client"
+import type { Prisma } from "../generated";
+import type { BookRepository } from "../repositories/book.repository";
 
-export const getAllBooks = async ({
-  page,
-  limit,
-  search,
-  sortBy,
-  sortOrder,
-}: {
-  page: number
-  limit: number
-  search?: string
-  sortBy?: string
-  sortOrder?: "asc" | "desc"
-}) => {
-  const skip = (page - 1) * limit
-
-  const where: any = { deletedAt: null }
-
-  if (search) {
-    where.OR = [
-      { title: { contains: search, mode: "insensitive" } },
-      { author: { contains: search, mode: "insensitive" } },
-    ]
-  }
-
-  const orderBy: Prisma.BookOrderByWithRelationInput = sortBy
-    ? { [sortBy]: sortOrder || "desc" }
-    : { createdAt: "desc" }
-
-  const { books, total } = await bookRepo.findAll({
-    skip,
-    take: limit,
-    where,
-    orderBy,
-  })
-
-  return {
-    data: books,
-    total,
-    totalPages: Math.ceil(total / limit),
-    currentPage: page,
-  }
+export interface IBookService {
+  getAllBooks(params: {
+    page: number;
+    limit: number;
+    search?: string;
+    sortBy?: string;
+    sortOrder?: "asc" | "desc";
+  }): Promise<{ data: any; total: number; totalPages: number; currentPage: number }>
+  getBookById(id: string): Promise<any>;
+  createBook(data: {
+    title: string;
+    author: string;
+    year: number;
+    price: number;
+    image: string;
+    categoryId: string;
+  }): Promise<any>;
+  updateBook(id: string, data: Prisma.BookUpdateArgs["data"]): Promise<any>;
+  deleteBook(id: string): Promise<any>;
+  findByIdTx(tx: Prisma.TransactionClient, id: string): Promise<any>;
+  decrementStockTx(tx: Prisma.TransactionClient, id: string, qty: number): Promise<any>;
+  incrementStockTx(tx: Prisma.TransactionClient, id: string, qty: number): Promise<any>;
+  exec(): Promise<any>;
 }
 
-export const getBookById = async (id: string) => {
-  const book = await bookRepo.findById(id)
+export class BookService implements IBookService {
+  constructor(private bookRepo: BookRepository) { }
 
-  if (!book) {
-    throw new Error("Buku tidak ditemukan")
+
+  async getAllBooks(params: {
+    page: number;
+    limit: number;
+    search?: string;
+    sortBy?: string;
+    sortOrder?: "asc" | "desc";
+  }) {
+    const { page, limit, search, sortBy, sortOrder } = params;
+
+    const skip = (page - 1) * limit;
+
+    const where: Prisma.BookWhereInput = {
+      deletedAt: null,
+      ...(search && {
+        OR: [
+          { title: { contains: search, mode: "insensitive" } },
+          { author: { contains: search, mode: "insensitive" } },
+        ],
+      }),
+    };
+
+    const orderBy: Prisma.BookOrderByWithRelationInput = sortBy
+      ? { [sortBy]: sortOrder || "desc" }
+      : { createdAt: "desc" };
+
+    const { books, total } = await this.bookRepo.findAll({
+      skip,
+      take: limit,
+      where,
+      orderBy,
+    });
+
+    return {
+      data: books,
+      total,
+      totalPages: Math.ceil(total / limit),
+      currentPage: page,
+    };
   }
 
-  return book
-}
+  async getBookById(id: string) {
+    const book = await this.bookRepo.findById(id);
 
-export const searchBooks = async (
-  keyword?: string,
-  min_price?: string,
-  max_price?: string
-) => {
-  const where: any = { deletedAt: null }
+    if (!book) {
+      throw new Error("Buku tidak ditemukan");
+    }
 
-  if (keyword) {
-    where.OR = [
-      { title: { contains: keyword, mode: "insensitive" } },
-      { author: { contains: keyword, mode: "insensitive" } },
-    ]
+    return book;
   }
 
-  if (min_price || max_price) {
-    where.price = {}
-    if (min_price) where.price.gte = Number(min_price)
-    if (max_price) where.price.lte = Number(max_price)
+  async createBook(data: {
+    title: string;
+    author: string;
+    year: number;
+    price: number;
+    image: string;
+    categoryId: string;
+  }) {
+    const { title, author, year, price, image, categoryId } = data;
+
+    if (isNaN(price)) {
+      throw new Error("Harga harus berupa angka");
+    }
+
+    if (isNaN(year) || year.toString().length !== 4) {
+      throw new Error("Tahun harus 4 digit");
+    }
+
+    return this.bookRepo.create({
+      title,
+      author,
+      year,
+      price,
+      image,
+      categoryId,
+    });
   }
 
-  return bookRepo.search(where)
-}
+  async updateBook(id: string, data: Prisma.BookUpdateArgs["data"]) {
+    const existing = await this.bookRepo.findById(id);
+    if (!existing) {
+      throw new Error("Buku tidak ditemukan");
+    }
 
-export const createBook = async ({
-  title,
-  author,
-  year,
-  price,
-  image,
-  categoryId,
-}: {
-  title: string
-  author: string
-  year: number
-  price: number
-  image: string
-  categoryId: string
-}) => {
-  if (isNaN(price)) {
-    throw new Error("Harga harus berupa angka")
+    return this.bookRepo.update(id, data);
   }
 
-  if (isNaN(year) || year.toString().length !== 4) {
-    throw new Error("Tahun harus 4 digit")
+  async deleteBook(id: string) {
+    const existing = await this.bookRepo.findById(id);
+    if (!existing) {
+      throw new Error("Buku tidak ditemukan");
+    }
+
+    await this.bookRepo.softDelete(id);
   }
 
-  return bookRepo.create({
-    title,
-    author,
-    year,
-    price,
-    image,
-    categoryId,
-  })
-}
-
-export const updateBook = async (id: string, data: any) => {
-  const existing = await bookRepo.findById(id)
-  if (!existing) {
-    throw new Error("Buku tidak ditemukan")
+  async findByIdTx(tx: Prisma.TransactionClient, id: string) {
+    return this.bookRepo.findByIdTx(tx, id);
   }
 
-  return bookRepo.update(id, data)
-}
 
-export const deleteBook = async (id: string) => {
-  const existing = await bookRepo.findById(id)
-  if (!existing) {
-    throw new Error("Buku tidak ditemukan")
+  async decrementStockTx(tx: Prisma.TransactionClient, id: string, qty: number) {
+    return this.bookRepo.decrementStock(tx, id, qty);
   }
 
-  await bookRepo.softDelete(id)
+  async incrementStockTx(tx: Prisma.TransactionClient, id: string, qty: number) {
+    return this.bookRepo.incrementStock(tx, id, qty);
+  }
+
+  async exec() {
+    const stats = await this.bookRepo.getStats()
+    const categoryStats = await this.bookRepo.getBooksByCategoryStats()
+
+    return {
+      overView: stats,
+      byCategory: categoryStats
+    }
+  }
 }
