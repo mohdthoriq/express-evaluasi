@@ -1,4 +1,4 @@
-import { books } from "../models/product.model";
+import { books } from "../models/product.model.js";
 export const getAllBooks = () => {
     return { books, total: books.length };
 };

@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { authenticate } from "../middlewares/auth.middleware";
-import { adminOnly } from "../middlewares/role.middleware";
-import { BorrowItemRepository } from "../repositories/borrowItem.repository";
-import { BorrowItemService } from "../services/borrow_Item.service";
-import { BorrowItemController } from "../controllers/borrow_Item.controller";
-import { PrismaInstance } from "../database";
+import { authenticate } from "../middlewares/auth.middleware.js";
+import { adminOnly } from "../middlewares/role.middleware.js";
+import { BorrowItemRepository } from "../repositories/borrowItem.repository.js";
+import { BorrowItemService } from "../services/borrow_Item.service.js";
+import { BorrowItemController } from "../controllers/borrow_Item.controller.js";
+import { PrismaInstance } from "../database.js";
 const router = Router();
 const repo = new BorrowItemRepository(PrismaInstance);
 const service = new BorrowItemService(repo);

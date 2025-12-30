@@ -1,5 +1,5 @@
-import type { BorrowItem } from "../generated/client";
-import type { BorrowItemRepository } from "../repositories/borrowItem.repository";
+import type { BorrowItem } from "../generated/client.js";
+import type { BorrowItemRepository } from "../repositories/borrowItem.repository.js";
 export interface IBorrowItemService {
     getAllItems(params: {
         page: number;

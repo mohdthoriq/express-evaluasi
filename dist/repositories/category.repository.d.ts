@@ -1,5 +1,5 @@
 import type { Decimal } from "@prisma/client/runtime/client";
-import { PrismaClient, type Category } from "../generated";
+import { PrismaClient, type Category } from "../generated/index.js";
 export interface ICategoryRepository {
     findAll(params: {
         skip: number;

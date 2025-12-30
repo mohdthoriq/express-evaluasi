@@ -1,27 +1,27 @@
 // prisma/seed.ts
-import { faker } from '@faker-js/faker';
-import bcrypt from 'bcrypt';
-import { PrismaInstance } from '../database';
+import { faker } from "@faker-js/faker";
+import bcrypt from "bcrypt";
+import { PrismaInstance } from "../database.js";
 const prisma = PrismaInstance;
 async function main() {
-    console.log('🌱 Mulai seeding database...');
+    console.log("\uD83C\uDF31 Mulai seeding database...");
     // Hapus data lama (optional)
     await prisma.book.deleteMany();
     await prisma.category.deleteMany();
     await prisma.user.deleteMany();
-    console.log('🗑️  Data lama dihapus');
+    console.log("\uD83D\uDDD1\uFE0F  Data lama dihapus");
     // 1. Buat Users (100 users)
-    console.log('👥 Membuat users...');
+    console.log("\uD83D\uDC65 Membuat users...");
     const users = [];
-    const roles = ['USER', 'ADMIN', 'MODERATOR'];
+    const roles = ["USER", "ADMIN", "MODERATOR"];
     // Buat admin default
-    const adminPassword = await bcrypt.hash('admin123', 10);
+    const adminPassword = await bcrypt.hash("admin123", 10);
     const admin = await prisma.user.create({
         data: {
-            username: 'admin',
-            email: 'admin@example.com',
+            username: "admin",
+            email: "admin@example.com",
             password: adminPassword,
-            role: 'ADMIN',
+            role: "ADMIN",
             createdAt: faker.date.past({ years: 2 }),
             updatedAt: faker.date.recent({ days: 30 }),
         },
@@ -32,7 +32,7 @@ async function main() {
         const firstName = faker.person.firstName();
         const lastName = faker.person.lastName();
         const username = faker.internet.username({ firstName, lastName }).toLowerCase();
-        const hashedPassword = await bcrypt.hash('password123', 10);
+        const hashedPassword = await bcrypt.hash("password123", 10);
         const user = await prisma.user.create({
             data: {
                 username: username + i, // Tambah angka untuk ensure unique
@@ -49,29 +49,29 @@ async function main() {
     }
     console.log(`✅ ${users.length} users dibuat`);
     // 2. Buat Categories (20 kategori buku)
-    console.log('📚 Membuat categories...');
+    console.log("\uD83D\uDCDA Membuat categories...");
     const categories = [];
     const categoryNames = [
-        'Fiction',
-        'Non-Fiction',
-        'Science Fiction',
-        'Fantasy',
-        'Mystery',
-        'Thriller',
-        'Romance',
-        'Horror',
-        'Biography',
-        'History',
-        'Science',
-        'Technology',
-        'Business',
-        'Self-Help',
-        'Philosophy',
-        'Poetry',
-        'Drama',
-        'Adventure',
-        'Children',
-        'Young Adult',
+        "Fiction",
+        "Non-Fiction",
+        "Science Fiction",
+        "Fantasy",
+        "Mystery",
+        "Thriller",
+        "Romance",
+        "Horror",
+        "Biography",
+        "History",
+        "Science",
+        "Technology",
+        "Business",
+        "Self-Help",
+        "Philosophy",
+        "Poetry",
+        "Drama",
+        "Adventure",
+        "Children",
+        "Young Adult",
     ];
     for (const name of categoryNames) {
         const category = await prisma.category.create({
@@ -87,30 +87,30 @@ async function main() {
     }
     console.log(`✅ ${categories.length} categories dibuat`);
     // 3. Buat Books (300 buku)
-    console.log('📖 Membuat books...');
+    console.log("\uD83D\uDCD6 Membuat books...");
     const books = [];
     // Daftar penulis terkenal untuk variasi
     const authors = [
-        'J.K. Rowling',
-        'Stephen King',
-        'Agatha Christie',
-        'Dan Brown',
-        'Ernest Hemingway',
-        'Jane Austen',
-        'Mark Twain',
-        'George Orwell',
-        'J.R.R. Tolkien',
-        'Harper Lee',
-        'F. Scott Fitzgerald',
-        'Charles Dickens',
-        'Leo Tolstoy',
-        'Gabriel Garcia Marquez',
-        'Toni Morrison',
-        'Margaret Atwood',
-        'Haruki Murakami',
-        'Paulo Coelho',
-        'Isaac Asimov',
-        'Yuval Noah Harari',
+        "J.K. Rowling",
+        "Stephen King",
+        "Agatha Christie",
+        "Dan Brown",
+        "Ernest Hemingway",
+        "Jane Austen",
+        "Mark Twain",
+        "George Orwell",
+        "J.R.R. Tolkien",
+        "Harper Lee",
+        "F. Scott Fitzgerald",
+        "Charles Dickens",
+        "Leo Tolstoy",
+        "Gabriel Garcia Marquez",
+        "Toni Morrison",
+        "Margaret Atwood",
+        "Haruki Murakami",
+        "Paulo Coelho",
+        "Isaac Asimov",
+        "Yuval Noah Harari",
     ];
     for (let i = 0; i < 300; i++) {
         // Pilih kategori yang tidak soft deleted untuk buku aktif
@@ -146,16 +146,16 @@ async function main() {
     }
     console.log(`✅ ${books.length} books dibuat`);
     // Tampilkan summary
-    console.log('\n📊 Summary:');
+    console.log("\n\uD83D\uDCCA Summary:");
     console.log(`   Users: ${users.length}`);
     console.log(`   Categories: ${categories.length}`);
     console.log(`   Books: ${books.length}`);
     // Detail per role
     const roleCount = await prisma.user.groupBy({
-        by: ['role'],
+        by: ["role"],
         _count: { role: true },
     });
-    console.log('\n👤 Users by Role:');
+    console.log("\n\uD83D\uDC64 Users by Role:");
     roleCount.forEach(r => console.log(`   ${r.role}: ${r._count.role}`));
     // Detail kategori dengan jumlah buku
     const categoryWithBooks = await prisma.category.findMany({
@@ -166,20 +166,20 @@ async function main() {
         },
         orderBy: {
             books: {
-                _count: 'desc',
+                _count: "desc",
             },
         },
         take: 5,
     });
-    console.log('\n📚 Top 5 Categories:');
+    console.log("\n\uD83D\uDCDA Top 5 Categories:");
     categoryWithBooks.forEach(c => {
         console.log(`   ${c.name}: ${c._count.books} books`);
     });
-    console.log('\n✨ Seeding selesai!');
+    console.log("\n\u2728 Seeding selesai!");
 }
 main()
     .catch((e) => {
-    console.error('❌ Error saat seeding:', e);
+    console.error("\u274C Error saat seeding:", e);
     process.exit(1);
 })
     .finally(async () => {

@@ -1,13 +1,13 @@
 import { Router } from "express";
-import { validate } from "../middlewares/product.validation";
-import { createBookValidation, getBookByIdValidation, updateBookValidation } from "../validations/book.validation";
-import { authenticate } from "../middlewares/auth.middleware";
-import { upload } from "../middlewares/upload.middleware";
-import { adminOnly } from "../middlewares/role.middleware";
-import { BookRepository } from "../repositories/book.repository";
-import { BookService } from "../services/book.service";
-import { BookController } from "../controllers/book.controller";
-import PrismaInstance from "../database";
+import { validate } from "../middlewares/product.validation.js";
+import { createBookValidation, getBookByIdValidation, updateBookValidation } from "../validations/book.validation.js";
+import { authenticate } from "../middlewares/auth.middleware.js";
+import { upload } from "../middlewares/upload.middleware.js";
+import { adminOnly } from "../middlewares/role.middleware.js";
+import { BookRepository } from "../repositories/book.repository.js";
+import { BookService } from "../services/book.service.js";
+import { BookController } from "../controllers/book.controller.js";
+import PrismaInstance from "../database.js";
 const router = Router();
 const repo = new BookRepository(PrismaInstance);
 const service = new BookService(repo);
@@ -113,7 +113,7 @@ const controller = new BookController(service);
  *                     totalPages:
  *                       type: integer
  */
-router.get('/', controller.getAll);
+router.get("/", controller.getAll);
 /**
  * @swagger
  * /books/stats:
@@ -207,7 +207,7 @@ router.get("/stats", authenticate, adminOnly, controller.getStats);
  *       404:
  *         description: Buku tidak ditemukan
  */
-router.get('/:id', validate(getBookByIdValidation), controller.getById);
+router.get("/:id", validate(getBookByIdValidation), controller.getById);
 /**
  * @swagger
  * /books:
@@ -272,7 +272,7 @@ router.get('/:id', validate(getBookByIdValidation), controller.getById);
  *       422:
  *         description: Validasi input gagal
  */
-router.post('/', authenticate, upload.single('image'), adminOnly, validate(createBookValidation), controller.create);
+router.post("/", authenticate, upload.single("image"), adminOnly, validate(createBookValidation), controller.create);
 /**
  * @swagger
  * /books/{id}:
@@ -333,7 +333,7 @@ router.post('/', authenticate, upload.single('image'), adminOnly, validate(creat
  *       404:
  *         description: Buku tidak ditemukan
  */
-router.put('/:id', adminOnly, upload.single('image'), validate(updateBookValidation), controller.update);
+router.put("/:id", adminOnly, upload.single("image"), validate(updateBookValidation), controller.update);
 /**
  * @swagger
  * /books/{id}:
@@ -369,6 +369,6 @@ router.put('/:id', adminOnly, upload.single('image'), validate(updateBookValidat
  *       404:
  *         description: Buku tidak ditemukan
  */
-router.delete('/:id', adminOnly, controller.remove);
+router.delete("/:id", adminOnly, controller.remove);
 export default router;
 //# sourceMappingURL=book.routes.js.map

@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import type { IBookService } from "../services/book.service";
+import type { IBookService } from "../services/book.service.js";
 export declare class BookController {
     private bookService;
     constructor(bookService: IBookService);

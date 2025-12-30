@@ -1,4 +1,4 @@
-import type { CategoryRepository } from "../repositories/category.repository";
+import type { CategoryRepository } from "../repositories/category.repository.js";
 export interface ICategoryService {
     getAllCategories(params: {
         page: number;

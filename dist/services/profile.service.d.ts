@@ -1,5 +1,5 @@
-import type { Profile, Prisma } from "../generated";
-import type { ProfileRepository } from "../repositories/profile.repository";
+import type { Profile, Prisma } from "../generated/index.js";
+import type { ProfileRepository } from "../repositories/profile.repository.js";
 export declare class ProfileService {
     private profileRepo;
     constructor(profileRepo: ProfileRepository);

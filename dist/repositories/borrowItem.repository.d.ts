@@ -1,4 +1,4 @@
-import type { PrismaClient, BorrowItem } from "../generated";
+import type { PrismaClient, BorrowItem } from "../generated/index.js";
 export interface BorrowItemByBookStat {
     bookId: string;
     _sum: {
@@ -95,17 +95,17 @@ export declare class BorrowItemRepository implements IBorrowItemRepository {
         borrowRecordId: number;
         bookId: string;
     }) | null>;
-    getStats(): Promise<import("../generated").Prisma.GetBorrowItemAggregateType<{
+    getStats(): Promise<import("../generated/index.js").Prisma.GetBorrowItemAggregateType<{
         _count: {
             id: true;
         };
     }>>;
-    getBorrowItemByBookStats(): Promise<(import("../generated").Prisma.PickEnumerable<import("../generated").Prisma.BorrowItemGroupByOutputType, "bookId"[]> & {
+    getBorrowItemByBookStats(): Promise<(import("../generated/index.js").Prisma.PickEnumerable<import("../generated/index.js").Prisma.BorrowItemGroupByOutputType, "bookId"[]> & {
         _sum: {
             quantity: number | null;
         };
     })[]>;
-    getBorrowItemStats(): Promise<import("../generated").Prisma.GetBorrowItemAggregateType<{
+    getBorrowItemStats(): Promise<import("../generated/index.js").Prisma.GetBorrowItemAggregateType<{
         _sum: {
             quantity: true;
         };

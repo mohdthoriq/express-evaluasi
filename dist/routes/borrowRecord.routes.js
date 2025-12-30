@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { authenticate } from "../middlewares/auth.middleware";
-import { adminOnly } from "../middlewares/role.middleware";
-import { BorrowRecordRepository } from "../repositories/borrowRecord.repository";
-import { BorrowRecordService } from "../services/borrowRecord.service";
-import { BorrowRecordController } from "../controllers/borrowRecord.controller";
-import { PrismaInstance } from "../database";
-import { BookRepository } from "../repositories/book.repository";
+import { authenticate } from "../middlewares/auth.middleware.js";
+import { adminOnly } from "../middlewares/role.middleware.js";
+import { BorrowRecordRepository } from "../repositories/borrowRecord.repository.js";
+import { BorrowRecordService } from "../services/borrowRecord.service.js";
+import { BorrowRecordController } from "../controllers/borrowRecord.controller.js";
+import { PrismaInstance } from "../database.js";
+import { BookRepository } from "../repositories/book.repository.js";
 const router = Router();
 const repo = new BorrowRecordRepository(PrismaInstance);
 const bookRepo = new BookRepository(PrismaInstance);

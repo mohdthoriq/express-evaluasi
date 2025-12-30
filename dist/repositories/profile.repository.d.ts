@@ -1,4 +1,4 @@
-import type { Prisma, PrismaClient, Profile } from "../generated";
+import type { Prisma, PrismaClient, Profile } from "../generated/index.js";
 export interface IProfileRepository {
     findUserById(userId: number): Promise<any | null>;
     findById(id: number): Promise<Profile | null>;
@@ -24,7 +24,7 @@ export declare class ProfileRepository implements IProfileRepository {
         email: string;
         password: string;
         role: string;
-    } | null, null, import("../generated/runtime/client").DefaultArgs, Prisma.PrismaClientOptions>;
+    } | null, null, import("../generated/runtime/client.js").DefaultArgs, Prisma.PrismaClientOptions>;
     findById(id: number): Prisma.Prisma__ProfileClient<{
         name: string;
         id: number;
@@ -32,7 +32,7 @@ export declare class ProfileRepository implements IProfileRepository {
         gender: string;
         address: string;
         profile_picture_url: string | null;
-    } | null, null, import("../generated/runtime/client").DefaultArgs, Prisma.PrismaClientOptions>;
+    } | null, null, import("../generated/runtime/client.js").DefaultArgs, Prisma.PrismaClientOptions>;
     create(data: {
         name: string;
         gender: string;
@@ -46,7 +46,7 @@ export declare class ProfileRepository implements IProfileRepository {
         gender: string;
         address: string;
         profile_picture_url: string | null;
-    }, never, import("../generated/runtime/client").DefaultArgs, Prisma.PrismaClientOptions>;
+    }, never, import("../generated/runtime/client.js").DefaultArgs, Prisma.PrismaClientOptions>;
     update(id: number, data: Prisma.ProfileUpdateInput): Prisma.Prisma__ProfileClient<{
         name: string;
         id: number;
@@ -54,7 +54,7 @@ export declare class ProfileRepository implements IProfileRepository {
         gender: string;
         address: string;
         profile_picture_url: string | null;
-    }, never, import("../generated/runtime/client").DefaultArgs, Prisma.PrismaClientOptions>;
+    }, never, import("../generated/runtime/client.js").DefaultArgs, Prisma.PrismaClientOptions>;
     delete(id: number): Prisma.Prisma__ProfileClient<{
         name: string;
         id: number;
@@ -62,6 +62,6 @@ export declare class ProfileRepository implements IProfileRepository {
         gender: string;
         address: string;
         profile_picture_url: string | null;
-    }, never, import("../generated/runtime/client").DefaultArgs, Prisma.PrismaClientOptions>;
+    }, never, import("../generated/runtime/client.js").DefaultArgs, Prisma.PrismaClientOptions>;
 }
 //# sourceMappingURL=profile.repository.d.ts.map

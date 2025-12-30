@@ -1,4 +1,4 @@
-import type { Book, Prisma, PrismaClient } from "../generated";
+import type { Book, Prisma, PrismaClient } from "../generated/index.js";
 export interface IBookRepository {
     findAll(params: {
         skip: number;
@@ -148,7 +148,7 @@ export declare class BookRepository implements IBookRepository {
         createdAt: Date;
         updatedAt: Date;
         deletedAt: Date | null;
-    } | null, null, import("../generated/runtime/client").DefaultArgs, Prisma.PrismaClientOptions>;
+    } | null, null, import("../generated/runtime/client.js").DefaultArgs, Prisma.PrismaClientOptions>;
     decrementStock(tx: Prisma.TransactionClient, id: string, qty: number): Prisma.Prisma__BookClient<{
         id: string;
         title: string;
@@ -161,7 +161,7 @@ export declare class BookRepository implements IBookRepository {
         createdAt: Date;
         updatedAt: Date;
         deletedAt: Date | null;
-    }, never, import("../generated/runtime/client").DefaultArgs, Prisma.PrismaClientOptions>;
+    }, never, import("../generated/runtime/client.js").DefaultArgs, Prisma.PrismaClientOptions>;
     incrementStock(tx: Prisma.TransactionClient, id: string, qty: number): Prisma.Prisma__BookClient<{
         id: string;
         title: string;
@@ -174,7 +174,7 @@ export declare class BookRepository implements IBookRepository {
         createdAt: Date;
         updatedAt: Date;
         deletedAt: Date | null;
-    }, never, import("../generated/runtime/client").DefaultArgs, Prisma.PrismaClientOptions>;
+    }, never, import("../generated/runtime/client.js").DefaultArgs, Prisma.PrismaClientOptions>;
     findComplex(params: {
         categoryName: string;
         maxPrice: number;

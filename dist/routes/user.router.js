@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { AuthController } from "../controllers/user.controller";
-import { UserRepository } from "../repositories/user.repository";
-import { AuthService } from "../services/user.service";
-import { PrismaInstance } from "../database";
+import { AuthController } from "../controllers/user.controller.js";
+import { UserRepository } from "../repositories/user.repository.js";
+import { AuthService } from "../services/user.service.js";
+import { PrismaInstance } from "../database.js";
 const router = Router();
 const repo = new UserRepository(PrismaInstance);
 const service = new AuthService(repo);
@@ -93,7 +93,7 @@ const controller = new AuthController(service);
  *       401:
  *         description: Email atau password salah
  */
-router.post('/register', controller.register);
-router.post('/login', controller.login);
+router.post("/register", controller.register);
+router.post("/login", controller.login);
 export default router;
 //# sourceMappingURL=user.router.js.map
