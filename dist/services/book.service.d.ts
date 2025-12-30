@@ -1,14 +1,73 @@
-export declare const getAllBooks: ({ page, limit, search, sortBy, sortOrder, }: {
-    page: number;
-    limit: number;
-    search?: string;
-    sortBy?: string;
-    sortOrder?: "asc" | "desc";
-}) => Promise<{
-    data: ({
-        category: {
+import type { Prisma } from "../generated/client";
+import type { BookRepository } from "../repositories/book.repository";
+export interface IBookService {
+    getAllBooks(params: {
+        page: number;
+        limit: number;
+        search?: string;
+        sortBy?: string;
+        sortOrder?: "asc" | "desc";
+    }): Promise<{
+        data: any;
+        total: number;
+        totalPages: number;
+        currentPage: number;
+    }>;
+    getBookById(id: string): Promise<any>;
+    createBook(data: {
+        title: string;
+        author: string;
+        year: number;
+        price: number;
+        image: string;
+        categoryId: string;
+    }): Promise<any>;
+    updateBook(id: string, data: Prisma.BookUpdateArgs["data"]): Promise<any>;
+    deleteBook(id: string): Promise<any>;
+    findByIdTx(tx: Prisma.TransactionClient, id: string): Promise<any>;
+    decrementStockTx(tx: Prisma.TransactionClient, id: string, qty: number): Promise<any>;
+    incrementStockTx(tx: Prisma.TransactionClient, id: string, qty: number): Promise<any>;
+    exec(): Promise<any>;
+}
+export declare class BookService implements IBookService {
+    private bookRepo;
+    constructor(bookRepo: BookRepository);
+    getAllBooks(params: {
+        page: number;
+        limit: number;
+        search?: string;
+        sortBy?: string;
+        sortOrder?: "asc" | "desc";
+    }): Promise<{
+        data: ({
+            category: {
+                name: string;
+                id: string;
+                createdAt: Date;
+                updatedAt: Date;
+                deletedAt: Date | null;
+            };
+        } & {
             id: string;
+            title: string;
+            author: string;
+            year: number;
+            price: number;
+            categoryId: string;
+            image: string;
+            stock: number;
+            createdAt: Date;
+            updatedAt: Date;
+            deletedAt: Date | null;
+        })[];
+        total: number;
+        totalPages: number;
+        currentPage: number;
+    }>;
+    getBookById(id: string): Promise<{
+        category: {
             name: string;
+            id: string;
             createdAt: Date;
             updatedAt: Date;
             deletedAt: Date | null;
@@ -19,91 +78,96 @@ export declare const getAllBooks: ({ page, limit, search, sortBy, sortOrder, }: 
         author: string;
         year: number;
         price: number;
+        categoryId: string;
         image: string;
         stock: number;
+        createdAt: Date;
+        updatedAt: Date;
+        deletedAt: Date | null;
+    }>;
+    createBook(data: {
+        title: string;
+        author: string;
+        year: number;
+        price: number;
+        image: string;
         categoryId: string;
-        createdAt: Date;
-        updatedAt: Date;
-        deletedAt: Date | null;
-    })[];
-    total: number;
-    totalPages: number;
-    currentPage: number;
-}>;
-export declare const getBookById: (id: string) => Promise<{
-    category: {
+    }): Promise<{
         id: string;
-        name: string;
+        title: string;
+        author: string;
+        year: number;
+        price: number;
+        categoryId: string;
+        image: string;
+        stock: number;
         createdAt: Date;
         updatedAt: Date;
         deletedAt: Date | null;
-    };
-} & {
-    id: string;
-    title: string;
-    author: string;
-    year: number;
-    price: number;
-    image: string;
-    stock: number;
-    categoryId: string;
-    createdAt: Date;
-    updatedAt: Date;
-    deletedAt: Date | null;
-}>;
-export declare const searchBooks: (keyword?: string, min_price?: string, max_price?: string) => Promise<({
-    category: {
+    }>;
+    updateBook(id: string, data: Prisma.BookUpdateArgs["data"]): Promise<{
         id: string;
-        name: string;
+        title: string;
+        author: string;
+        year: number;
+        price: number;
+        categoryId: string;
+        image: string;
+        stock: number;
         createdAt: Date;
         updatedAt: Date;
         deletedAt: Date | null;
-    };
-} & {
-    id: string;
-    title: string;
-    author: string;
-    year: number;
-    price: number;
-    image: string;
-    stock: number;
-    categoryId: string;
-    createdAt: Date;
-    updatedAt: Date;
-    deletedAt: Date | null;
-})[]>;
-export declare const createBook: ({ title, author, year, price, image, categoryId, }: {
-    title: string;
-    author: string;
-    year: number;
-    price: number;
-    image: string;
-    categoryId: string;
-}) => Promise<{
-    id: string;
-    title: string;
-    author: string;
-    year: number;
-    price: number;
-    image: string;
-    stock: number;
-    categoryId: string;
-    createdAt: Date;
-    updatedAt: Date;
-    deletedAt: Date | null;
-}>;
-export declare const updateBook: (id: string, data: any) => Promise<{
-    id: string;
-    title: string;
-    author: string;
-    year: number;
-    price: number;
-    image: string;
-    stock: number;
-    categoryId: string;
-    createdAt: Date;
-    updatedAt: Date;
-    deletedAt: Date | null;
-}>;
-export declare const deleteBook: (id: string) => Promise<void>;
+    }>;
+    deleteBook(id: string): Promise<void>;
+    findByIdTx(tx: Prisma.TransactionClient, id: string): Promise<{
+        id: string;
+        title: string;
+        author: string;
+        year: number;
+        price: number;
+        categoryId: string;
+        image: string;
+        stock: number;
+        createdAt: Date;
+        updatedAt: Date;
+        deletedAt: Date | null;
+    } | null>;
+    decrementStockTx(tx: Prisma.TransactionClient, id: string, qty: number): Promise<{
+        id: string;
+        title: string;
+        author: string;
+        year: number;
+        price: number;
+        categoryId: string;
+        image: string;
+        stock: number;
+        createdAt: Date;
+        updatedAt: Date;
+        deletedAt: Date | null;
+    }>;
+    incrementStockTx(tx: Prisma.TransactionClient, id: string, qty: number): Promise<{
+        id: string;
+        title: string;
+        author: string;
+        year: number;
+        price: number;
+        categoryId: string;
+        image: string;
+        stock: number;
+        createdAt: Date;
+        updatedAt: Date;
+        deletedAt: Date | null;
+    }>;
+    exec(): Promise<{
+        overView: {
+            totalBooks: number;
+            totalCategories: number;
+            totalAuthors: number;
+        };
+        byCategory: {
+            category: string;
+            totalBooks: number;
+        }[];
+    }>;
+}
 //# sourceMappingURL=book.service.d.ts.map

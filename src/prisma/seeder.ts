@@ -1,9 +1,9 @@
 // prisma/seed.ts
 import { faker } from '@faker-js/faker';
 import bcrypt from 'bcrypt';
-import { getPrisma } from '../prisma';
+import { PrismaInstance } from '../database';
 
-const prisma = getPrisma()
+const prisma = PrismaInstance
 
 async function main() {
   console.log('🌱 Mulai seeding database...');
@@ -19,7 +19,7 @@ async function main() {
   console.log('👥 Membuat users...');
   const users = [];
   const roles = ['USER', 'ADMIN', 'MODERATOR'];
-  
+
   // Buat admin default
   const adminPassword = await bcrypt.hash('admin123', 10);
   const admin = await prisma.user.create({
@@ -100,7 +100,7 @@ async function main() {
   // 3. Buat Books (300 buku)
   console.log('📖 Membuat books...');
   const books = [];
-  
+
   // Daftar penulis terkenal untuk variasi
   const authors = [
     'J.K. Rowling',
@@ -140,15 +140,15 @@ async function main() {
       () => `${faker.person.firstName()}'s ${faker.word.noun()}`,
       () => `A ${faker.word.noun()} in ${faker.location.city()}`,
     ];
-    
+
     const titleGenerator = faker.helpers.arrayElement(titleTemplates);
     const title = titleGenerator();
 
     const book = await prisma.book.create({
       data: {
         title: title.charAt(0).toUpperCase() + title.slice(1),
-        author: faker.datatype.boolean(0.7) 
-          ? faker.helpers.arrayElement(authors) 
+        author: faker.datatype.boolean(0.7)
+          ? faker.helpers.arrayElement(authors)
           : faker.person.fullName(),
         year: faker.number.int({ min: 1950, max: 2024 }),
         price: faker.number.int({ min: 50000, max: 500000 }),
@@ -169,7 +169,7 @@ async function main() {
   console.log(`   Users: ${users.length}`);
   console.log(`   Categories: ${categories.length}`);
   console.log(`   Books: ${books.length}`);
-  
+
   // Detail per role
   const roleCount = await prisma.user.groupBy({
     by: ['role'],
@@ -192,7 +192,7 @@ async function main() {
     },
     take: 5,
   });
-  
+
   console.log('\n📚 Top 5 Categories:');
   categoryWithBooks.forEach(c => {
     console.log(`   ${c.name}: ${c._count.books} books`);

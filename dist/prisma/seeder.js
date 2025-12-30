@@ -1,8 +1,8 @@
 // prisma/seed.ts
 import { faker } from '@faker-js/faker';
 import bcrypt from 'bcrypt';
-import { getPrisma } from '../prisma';
-const prisma = getPrisma();
+import { PrismaInstance } from '../database';
+const prisma = PrismaInstance;
 async function main() {
     console.log('🌱 Mulai seeding database...');
     // Hapus data lama (optional)

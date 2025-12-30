@@ -1,37 +1,31 @@
-import { getPrisma } from "../prisma";
-const prisma = getPrisma();
-export async function findByUserId(userId) {
-    return await prisma.user.findUnique({
-        where: {
-            id: userId
-        }
-    });
-}
-export async function findById(id) {
-    return await prisma.user.findUnique({
-        where: {
-            id
-        }
-    });
-}
-export async function create(data) {
-    return prisma.profile.create({
-        data
-    });
-}
-export async function update(id, data) {
-    return prisma.profile.update({
-        where: {
-            id
-        },
-        data
-    });
-}
-export async function remove(id) {
-    return prisma.profile.delete({
-        where: {
-            id
-        }
-    });
+export class ProfileRepository {
+    prisma;
+    constructor(prisma) {
+        this.prisma = prisma;
+    }
+    findUserById(userId) {
+        return this.prisma.user.findUnique({
+            where: { id: userId },
+        });
+    }
+    findById(id) {
+        return this.prisma.profile.findUnique({
+            where: { id },
+        });
+    }
+    create(data) {
+        return this.prisma.profile.create({ data });
+    }
+    update(id, data) {
+        return this.prisma.profile.update({
+            where: { id },
+            data,
+        });
+    }
+    delete(id) {
+        return this.prisma.profile.delete({
+            where: { id },
+        });
+    }
 }
 //# sourceMappingURL=profile.repository.js.map

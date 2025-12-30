@@ -2,11 +2,11 @@
 import { Pool } from "pg";
 import config from "./utils/env";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "./src/generated/prisma/client";
+import { PrismaClient } from "./generated";
 
-let prisma: PrismaClient;
+let prisma: PrismaClient
 
-export const getPrisma = () => {
+const getPrisma = () => {
     if (!prisma) {
         const pool = new Pool({connectionString: config.DATABASE_URL});
         const adapter = new PrismaPg(pool);
@@ -14,3 +14,7 @@ export const getPrisma = () => {
     }
     return prisma;
 }
+
+export const PrismaInstance = getPrisma();
+
+export default PrismaInstance;

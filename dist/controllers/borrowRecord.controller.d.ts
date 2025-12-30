@@ -1,8 +1,14 @@
 import type { Request, Response } from "express";
-export declare const createBorrow: (req: Request, res: Response) => Promise<void>;
-export declare const returnBorrow: (req: Request, res: Response) => Promise<void>;
-export declare const getMyBorrows: (req: Request, res: Response) => Promise<void>;
-export declare const getAllBorrows: (req: Request, res: Response) => Promise<void>;
-export declare const getBorrowById: (req: Request, res: Response) => Promise<void>;
-export declare const deleteBorrow: (req: Request, res: Response) => Promise<void>;
+import type { BorrowRecordService } from "../services/borrowRecord.service";
+export declare class BorrowRecordController {
+    private borrowService;
+    constructor(borrowService: BorrowRecordService);
+    createBorrow: (req: Request, res: Response) => Promise<void>;
+    returnBorrow: (req: Request, res: Response) => Promise<void>;
+    getMyBorrows: (req: Request, res: Response) => Promise<void>;
+    getAllBorrows: (req: Request, res: Response) => Promise<void>;
+    getBorrowById: (req: Request, res: Response) => Promise<void>;
+    deleteBorrow: (req: Request, res: Response) => Promise<void>;
+    getStats: (req: Request, res: Response) => Promise<void>;
+}
 //# sourceMappingURL=borrowRecord.controller.d.ts.map

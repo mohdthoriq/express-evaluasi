@@ -1,46 +1,71 @@
-import * as categoryRepo from "../repositories/category.repository";
-export const getAllCategories = async ({ page, limit, }) => {
-    const skip = (page - 1) * limit;
-    const { categories, total } = await categoryRepo.findAll({
-        skip,
-        take: limit
-    });
-    return {
-        total,
-        categories,
-    };
-};
-export const getCategoryById = async (id) => {
-    const category = await categoryRepo.findById(id);
-    if (!category) {
-        throw new Error("Kategori tidak ditemukan");
+export class CategoryService {
+    categoryRepo;
+    constructor(categoryRepo) {
+        this.categoryRepo = categoryRepo;
     }
-    return category;
-};
-export const createCategory = async (name) => {
-    if (!name) {
-        throw new Error("Nama kategori tidak boleh kosong");
+    async getAllCategories(params) {
+        const { page, limit } = params;
+        const skip = (page - 1) * limit;
+        const { categories, total } = await this.categoryRepo.findAll({
+            skip,
+            take: limit,
+        });
+        return {
+            data: categories,
+            total,
+            totalPages: Math.ceil(total / limit),
+            currentPage: page,
+        };
     }
-    return categoryRepo.create(name);
-};
-export const updateCategory = async (id, name) => {
-    if (!name) {
-        throw new Error("Nama kategori tidak boleh kosong");
+    async getCategoryById(id) {
+        const category = await this.categoryRepo.findById(id);
+        if (!category) {
+            throw new Error("Kategori tidak ditemukan");
+        }
+        return category;
     }
-    const exist = await categoryRepo.findById(id);
-    if (!exist) {
-        throw new Error("Kategori tidak ditemukan");
+    async createCategory(name) {
+        if (!name) {
+            throw new Error("Nama kategori tidak boleh kosong");
+        }
+        return this.categoryRepo.create(name);
     }
-    return categoryRepo.update(id, name);
-};
-export const deleteCategory = async (id) => {
-    const exist = await categoryRepo.findById(id);
-    if (!exist) {
-        throw new Error("Kategori tidak ditemukan");
+    async updateCategory(id, name) {
+        if (!name) {
+            throw new Error("Nama kategori tidak boleh kosong");
+        }
+        const exist = await this.categoryRepo.findById(id);
+        if (!exist) {
+            throw new Error("Kategori tidak ditemukan");
+        }
+        return this.categoryRepo.update(id, name);
     }
-    if (exist.books && exist.books.length > 0) {
-        throw new Error("Kategori masih memiliki buku");
+    async deleteCategory(id) {
+        const exist = await this.categoryRepo.findById(id);
+        if (!exist) {
+            throw new Error("Kategori tidak ditemukan");
+        }
+        if (exist.books && exist.books.length > 0) {
+            throw new Error("Kategori masih memiliki buku");
+        }
+        return this.categoryRepo.softDelete(id);
     }
-    return categoryRepo.softDelete(id);
-};
+    async execStats() {
+        const data = await this.categoryRepo.getCategoryProductStats();
+        return data.map(category => {
+            const totalProducts = category.books.length;
+            const totalStock = category.books.reduce((a, b) => a + b.stock, 0);
+            const avgPrice = totalProducts === 0
+                ? 0
+                : category.books.reduce((a, b) => a + Number(b.price), 0) / totalProducts;
+            return {
+                id: category.id,
+                name: category.name,
+                totalProducts,
+                totalStock,
+                avgPrice
+            };
+        });
+    }
+}
 //# sourceMappingURL=category.service.js.map

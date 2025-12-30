@@ -1,29 +1,65 @@
-import * as borrowItemRepo from "../repositories/borrowItem.repository"
+import type { BorrowItem } from "../generated/client";
+import type { BorrowItemRepository } from "../repositories/borrowItem.repository";
 
-export const getAllItems = async ({
-  page,
-  limit,
-}: {
-  page: number
-  limit: number
-}) => {
-  const skip = (page - 1) * limit
+export interface IBorrowItemService {
+  getAllItems(params: {
+    page: number;
+    limit: number;
+  }): Promise<{
+    total: number;
+    items: BorrowItem[];
+  }>;
 
-  const { items, total } = await borrowItemRepo.findAll({
-    skip,
-    take: limit,
-  })
+  getItemById(id: number): Promise<BorrowItem>;
 
-  return {
-    total,
-    items,
-  }
+  exec(): Promise<any>;
 }
 
+export class BorrowItemService implements IBorrowItemService {
+  constructor(private borrowItemRepo: BorrowItemRepository) {}
 
-export const getItemById = async (id: number) => {
-  const item = await borrowItemRepo.findById(id)
+  async getAllItems(params: {
+    page: number;
+    limit: number;
+  }) {
+    const { page, limit } = params;
 
-  if (!item) throw new Error("Borrow item tidak ditemukan")
-  return item
+    const skip = (page - 1) * limit;
+
+    const { items, total } = await this.borrowItemRepo.findAll({
+      skip,
+      take: limit,
+    });
+
+    return {
+      total,
+      items,
+    };
+  }
+
+  async getItemById(id: number) {
+    const item = await this.borrowItemRepo.findById(id);
+
+    if (!item) {
+      throw new Error("Borrow item tidak ditemukan");
+    }
+
+    return item;
+  }
+
+   async exec() {
+    const overview = await this.borrowItemRepo.getBorrowItemStats()
+    const byBook = await this.borrowItemRepo.getBorrowItemByBookStats()
+
+    return {
+      overview: {
+        totalItems: overview._count.id,
+        totalQuantity: overview._sum.quantity ?? 0
+      },
+      byBook: byBook.map(item => ({
+        bookId: item.bookId,
+        totalQuantity: item._sum.quantity ?? 0
+      }))
+    }
+  }
 }

@@ -1,46 +1,54 @@
-import { getPrisma } from "../prisma";
-import type { Prisma } from "../src/generated/prisma/client";
+import type { Prisma, PrismaClient, Profile } from "../generated"
 
-const prisma = getPrisma()
-
-export async function findByUserId(userId: number) {
-    return await prisma.user.findUnique({
-        where: {
-            id: userId
-        }
-    })
-}
-export async function findById(id: number) {
-    return await prisma.user.findUnique({
-        where: {
-            id
-        }
-    })
-}
-export async function create(data: {
-    name: string;
-    gender: string;
-    address: string;
-    profile_picture_url?: string;
-    userId: number;
-}){
-    return prisma.profile.create({
-        data
-    })
-}
-export async function update(id: number, data:Prisma.ProfileUpdateInput){
-    return prisma.profile.update({
-        where: {
-            id
-        },
-        data
-    })
+export interface IProfileRepository {
+  findUserById(userId: number): Promise<any | null>
+  findById(id: number): Promise<Profile | null>
+  create(data: {
+    name: string
+    gender: string
+    address: string
+    profile_picture_url?: string
+    userId: number
+  }): Promise<Profile>
+  update(id: number, data: Prisma.ProfileUpdateInput): Promise<Profile>
+  delete(id: number): Promise<Profile>
 }
 
-export async function remove(id: number){
-    return prisma.profile.delete({
-        where: {
-            id
-        }
+export class ProfileRepository implements IProfileRepository {
+  constructor(private prisma: PrismaClient) {}
+
+  findUserById(userId: number) {
+    return this.prisma.user.findUnique({
+      where: { id: userId },
     })
+  }
+
+  findById(id: number) {
+    return this.prisma.profile.findUnique({
+      where: { id },
+    })
+  }
+
+  create(data: {
+    name: string
+    gender: string
+    address: string
+    profile_picture_url?: string
+    userId: number
+  }) {
+    return this.prisma.profile.create({ data })
+  }
+
+  update(id: number, data: Prisma.ProfileUpdateInput) {
+    return this.prisma.profile.update({
+      where: { id },
+      data,
+    })
+  }
+
+  delete(id: number) {
+    return this.prisma.profile.delete({
+      where: { id },
+    })
+  }
 }

@@ -4,7 +4,8 @@ import morgan from "morgan";
 import helmet from "helmet";
 import { successResponse } from "./utils/response";
 import { errorHandler } from "./middlewares/error.handler";
-import productRouter from "./routes/product.routes";
+import swaggerUi from "swagger-ui-express"
+import swaggerSpec from "./utils/swagger"
 import bookRouter from "./routes/book.routes";
 import categoryRouter from "./routes/category.routes";
 import userRouter from "./routes/user.router";
@@ -31,6 +32,8 @@ app.use(express.static('public'))
 app.set('query parser', 'extended')
 
 app.use(requestLogger)
+
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
 app.use('/auth', userRouter);
 

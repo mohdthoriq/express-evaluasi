@@ -1,32 +1,48 @@
-import type { Request, Response } from "express"
-import * as service from "../services/borrow_Item.service"
-import { successResponse } from "../utils/response"
+import type { Request, Response } from "express";
+import { successResponse } from "../utils/response";
+import type { BorrowItemService } from "../services/borrow_Item.service";
 
-export const getAllItems = async (req: Request, res: Response) => {
-  const page = Number(req.query.page) || 1
-  const limit = Number(req.query.limit) || 10
+export class BorrowItemController {
+  constructor(private borrowItemService: BorrowItemService) {}
 
-  const result = await service.getAllItems({ page, limit })
+  getAllItems = async (req: Request, res: Response) => {
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
 
-  const pagination = {
-    page,
-    limit,
-    total: result.total,
-    totalPages: Math.ceil(result.total / limit),
+    const result = await this.borrowItemService.getAllItems({
+      page,
+      limit,
+    });
+
+    const pagination = {
+      page,
+      limit,
+      total: result.total,
+      totalPages: Math.ceil(result.total / limit),
+    };
+
+    successResponse(
+      res,
+      "Data ditemukan",
+      result.items,
+      pagination
+    );
+  };
+
+  getItemById = async (req: Request, res: Response) => {
+    const id = Number(req.params.id);
+    if (isNaN(id)) {
+      throw new Error("ID tidak valid");
+    }
+
+    const data = await this.borrowItemService.getItemById(id);
+
+    successResponse(res, "Data ditemukan", data);
+  };
+
+  getStats = async (req: Request, res: Response) => {
+    const stats = await this.borrowItemService.exec()
+
+    successResponse(res, "Borrow item stats retrieved successfully", stats)
   }
-
-  successResponse(
-    res,
-    "Data ditemukan",
-    result.items,
-    pagination
-  )
-}
-
-
-export const getItemById = async (req: Request, res: Response) => {
-  const id = Number(req.params.id)
-  const data = await service.getItemById(id)
-
-  successResponse(res, "Data ditemukan", data)
 }

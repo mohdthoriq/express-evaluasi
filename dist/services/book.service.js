@@ -1,81 +1,90 @@
-import * as bookRepo from "../repositories/book.repository";
-export const getAllBooks = async ({ page, limit, search, sortBy, sortOrder, }) => {
-    const skip = (page - 1) * limit;
-    const where = { deletedAt: null };
-    if (search) {
-        where.OR = [
-            { title: { contains: search, mode: "insensitive" } },
-            { author: { contains: search, mode: "insensitive" } },
-        ];
+export class BookService {
+    bookRepo;
+    constructor(bookRepo) {
+        this.bookRepo = bookRepo;
     }
-    const orderBy = sortBy
-        ? { [sortBy]: sortOrder || "desc" }
-        : { createdAt: "desc" };
-    const { books, total } = await bookRepo.findAll({
-        skip,
-        take: limit,
-        where,
-        orderBy,
-    });
-    return {
-        data: books,
-        total,
-        totalPages: Math.ceil(total / limit),
-        currentPage: page,
-    };
-};
-export const getBookById = async (id) => {
-    const book = await bookRepo.findById(id);
-    if (!book) {
-        throw new Error("Buku tidak ditemukan");
+    async getAllBooks(params) {
+        const { page, limit, search, sortBy, sortOrder } = params;
+        const skip = (page - 1) * limit;
+        const where = {
+            deletedAt: null,
+            ...(search && {
+                OR: [
+                    { title: { contains: search, mode: "insensitive" } },
+                    { author: { contains: search, mode: "insensitive" } },
+                ],
+            }),
+        };
+        const orderBy = sortBy
+            ? { [sortBy]: sortOrder || "desc" }
+            : { createdAt: "desc" };
+        const { books, total } = await this.bookRepo.findAll({
+            skip,
+            take: limit,
+            where,
+            orderBy,
+        });
+        return {
+            data: books,
+            total,
+            totalPages: Math.ceil(total / limit),
+            currentPage: page,
+        };
     }
-    return book;
-};
-export const searchBooks = async (keyword, min_price, max_price) => {
-    const where = { deletedAt: null };
-    if (keyword) {
-        where.OR = [
-            { title: { contains: keyword, mode: "insensitive" } },
-            { author: { contains: keyword, mode: "insensitive" } },
-        ];
+    async getBookById(id) {
+        const book = await this.bookRepo.findById(id);
+        if (!book) {
+            throw new Error("Buku tidak ditemukan");
+        }
+        return book;
     }
-    if (min_price || max_price) {
-        where.price = {};
-        if (min_price)
-            where.price.gte = Number(min_price);
-        if (max_price)
-            where.price.lte = Number(max_price);
+    async createBook(data) {
+        const { title, author, year, price, image, categoryId } = data;
+        if (isNaN(price)) {
+            throw new Error("Harga harus berupa angka");
+        }
+        if (isNaN(year) || year.toString().length !== 4) {
+            throw new Error("Tahun harus 4 digit");
+        }
+        return this.bookRepo.create({
+            title,
+            author,
+            year,
+            price,
+            image,
+            categoryId,
+        });
     }
-    return bookRepo.search(where);
-};
-export const createBook = async ({ title, author, year, price, image, categoryId, }) => {
-    if (isNaN(price)) {
-        throw new Error("Harga harus berupa angka");
+    async updateBook(id, data) {
+        const existing = await this.bookRepo.findById(id);
+        if (!existing) {
+            throw new Error("Buku tidak ditemukan");
+        }
+        return this.bookRepo.update(id, data);
     }
-    if (isNaN(year) || year.toString().length !== 4) {
-        throw new Error("Tahun harus 4 digit");
+    async deleteBook(id) {
+        const existing = await this.bookRepo.findById(id);
+        if (!existing) {
+            throw new Error("Buku tidak ditemukan");
+        }
+        await this.bookRepo.softDelete(id);
     }
-    return bookRepo.create({
-        title,
-        author,
-        year,
-        price,
-        image,
-        categoryId,
-    });
-};
-export const updateBook = async (id, data) => {
-    const existing = await bookRepo.findById(id);
-    if (!existing) {
-        throw new Error("Buku tidak ditemukan");
+    async findByIdTx(tx, id) {
+        return this.bookRepo.findByIdTx(tx, id);
     }
-    return bookRepo.update(id, data);
-};
-export const deleteBook = async (id) => {
-    const existing = await bookRepo.findById(id);
-    if (!existing) {
-        throw new Error("Buku tidak ditemukan");
+    async decrementStockTx(tx, id, qty) {
+        return this.bookRepo.decrementStock(tx, id, qty);
     }
-    await bookRepo.softDelete(id);
-};
+    async incrementStockTx(tx, id, qty) {
+        return this.bookRepo.incrementStock(tx, id, qty);
+    }
+    async exec() {
+        const stats = await this.bookRepo.getStats();
+        const categoryStats = await this.bookRepo.getBooksByCategoryStats();
+        return {
+            overView: stats,
+            byCategory: categoryStats
+        };
+    }
+}
 //# sourceMappingURL=book.service.js.map
