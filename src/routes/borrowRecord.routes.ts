@@ -62,7 +62,7 @@ const controller = new BorrowRecordController(service)
 
 /**
  * @swagger
- * /borrow-records/stats:
+ * /borrows/stats:
  *   get:
  *     summary: Statistik peminjaman
  *     tags: [BorrowRecord]
@@ -85,7 +85,7 @@ const controller = new BorrowRecordController(service)
 
 /**
  * @swagger
- * /borrow-records/me:
+ * /borrows/me:
  *   get:
  *     summary: Ambil peminjaman milik user yang login
  *     tags: [BorrowRecord]
@@ -135,7 +135,7 @@ const controller = new BorrowRecordController(service)
 
 /**
  * @swagger
- * /borrow-records/{id}:
+ * /borrows/{id}:
  *   get:
  *     summary: Ambil peminjaman berdasarkan ID (admin)
  *     tags: [BorrowRecord]
@@ -165,7 +165,7 @@ const controller = new BorrowRecordController(service)
 
 /**
  * @swagger
- * /borrow-records/{id}/return:
+ * /borrows/{id}/return:
  *   put:
  *     summary: Kembalikan peminjaman
  *     tags: [BorrowRecord]
@@ -195,7 +195,7 @@ const controller = new BorrowRecordController(service)
 
 /**
  * @swagger
- * /borrow-records/{id}:
+ * /borrows/{id}:
  *   delete:
  *     summary: Hapus peminjaman (admin)
  *     tags: [BorrowRecord]
