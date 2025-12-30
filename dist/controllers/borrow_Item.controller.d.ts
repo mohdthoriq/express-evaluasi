@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import type { BorrowItemService } from "../services/borrow_Item.service";
+import type { BorrowItemService } from "../services/borrow_Item.service.js";
 export declare class BorrowItemController {
     private borrowItemService;
     constructor(borrowItemService: BorrowItemService);

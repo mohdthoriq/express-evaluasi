@@ -1,6 +1,6 @@
-import jwt from 'jsonwebtoken';
-import config from '../utils/env';
-import { errorResponse } from '../utils/response';
+import jwt from "jsonwebtoken";
+import config from "../utils/env.js";
+import { errorResponse } from "../utils/response.js";
 export const authenticate = (req, res, next) => {
     const authHeader = req.headers.authorization;
     if (!authHeader) {
@@ -8,7 +8,7 @@ export const authenticate = (req, res, next) => {
         err.statusCode = 401;
         throw err;
     }
-    const token = authHeader?.split(' ')[1];
+    const token = authHeader?.split(" ")[1];
     try {
         const payload = jwt.verify(token, config.JWT_SECRET);
         req.user = payload;

@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import type { BorrowRecordService } from "../services/borrowRecord.service";
+import type { BorrowRecordService } from "../services/borrowRecord.service.js";
 export declare class BorrowRecordController {
     private borrowService;
     constructor(borrowService: BorrowRecordService);

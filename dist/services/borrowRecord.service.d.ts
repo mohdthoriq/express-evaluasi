@@ -1,6 +1,6 @@
-import type { Prisma } from "../generated/client";
-import type { BorrowRecordRepository } from "../repositories/borrowRecord.repository";
-import type { BookRepository } from "../repositories/book.repository";
+import type { Prisma } from "../generated/index.js";
+import type { BorrowRecordRepository } from "../repositories/borrowRecord.repository.js";
+import type { BookRepository } from "../repositories/book.repository.js";
 export interface IBorrowRecordService {
     createBorrow(userId: number, items: {
         bookId: string;
