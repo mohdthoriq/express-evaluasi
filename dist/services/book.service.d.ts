@@ -1,5 +1,5 @@
-import type { Prisma } from "../generated/client";
-import type { BookRepository } from "../repositories/book.repository";
+import type { Prisma } from "../generated/index.js";
+import type { BookRepository } from "../repositories/book.repository.js";
 export interface IBookService {
     getAllBooks(params: {
         page: number;

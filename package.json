@@ -7,10 +7,10 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma generate && prisma migrate dev",
     "prisma:reset": "prisma migrate reset",
-    "dev": "tsx watch src/index.ts",
-    "start": "nodemon dist/index.js",
+    "dev": "tsx watch --env-file=.env.development src/index.ts",
+    "start": "nodemon --env-file=.env.production dist/index.js",
     "seed": "tsx src/prisma/seeder.ts",
-    "build": "prisma generate && tsc && cp -rf src/generated /dist && ts-add-js-extension --dir=dist",
+    "build": "prisma generate && tsc && cp -rf src/generated dist && ts-add-js-extension --dir=dist",
     "test": "jest"
   },
   "keywords": [],

@@ -1,6 +1,6 @@
-import { successResponse } from "../utils/response";
-import { createBook, deleteBook, getAllBooks, getBookById, searchBooks, updateBook } from "../services/product.service";
-import { books } from "../models/product.model";
+import { successResponse } from "../utils/response.js";
+import { createBook, deleteBook, getAllBooks, getBookById, searchBooks, updateBook } from "../services/product.service.js";
+import { books } from "../models/product.model.js";
 export const getAll = (_req, res) => {
     const { books, total } = getAllBooks();
     successResponse(res, "Daftar buku ditemukan", {

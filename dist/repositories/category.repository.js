@@ -1,4 +1,4 @@
-import { PrismaClient } from "../generated/client";
+import { PrismaClient } from "../generated/index.js";
 export class CategoryRepository {
     prisma;
     constructor(prisma) {

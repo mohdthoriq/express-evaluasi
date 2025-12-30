@@ -1,4 +1,4 @@
-import type { PrismaClient, User } from "../generated/client";
+import type { PrismaClient, User } from "../generated/index.js";
 export interface IUserRepository {
     findByEmail(email: string): Promise<User | null>;
     findById(id: number): Promise<User | null>;
@@ -12,7 +12,7 @@ export interface IUserRepository {
 export declare class UserRepository implements IUserRepository {
     private prisma;
     constructor(prisma: PrismaClient);
-    findByEmail(email: string): import("../generated/models").Prisma__UserClient<{
+    findByEmail(email: string): import("../generated/index.js").Prisma.Prisma__UserClient<{
         id: number;
         createdAt: Date;
         updatedAt: Date;
@@ -21,10 +21,8 @@ export declare class UserRepository implements IUserRepository {
         email: string;
         password: string;
         role: string;
-    } | null, null, import("@prisma/client/runtime/client").DefaultArgs, {
-        omit: import("../generated/internal/prismaNamespace").GlobalOmitConfig | undefined;
-    }>;
-    findById(id: number): import("../generated/models").Prisma__UserClient<{
+    } | null, null, import("../generated/runtime/client.js").DefaultArgs, import("../generated/index.js").Prisma.PrismaClientOptions>;
+    findById(id: number): import("../generated/index.js").Prisma.Prisma__UserClient<{
         id: number;
         createdAt: Date;
         updatedAt: Date;
@@ -33,15 +31,13 @@ export declare class UserRepository implements IUserRepository {
         email: string;
         password: string;
         role: string;
-    } | null, null, import("@prisma/client/runtime/client").DefaultArgs, {
-        omit: import("../generated/internal/prismaNamespace").GlobalOmitConfig | undefined;
-    }>;
+    } | null, null, import("../generated/runtime/client.js").DefaultArgs, import("../generated/index.js").Prisma.PrismaClientOptions>;
     create(data: {
         username: string;
         email: string;
         password: string;
         role?: string;
-    }): import("../generated/models").Prisma__UserClient<{
+    }): import("../generated/index.js").Prisma.Prisma__UserClient<{
         id: number;
         createdAt: Date;
         updatedAt: Date;
@@ -50,8 +46,6 @@ export declare class UserRepository implements IUserRepository {
         email: string;
         password: string;
         role: string;
-    }, never, import("@prisma/client/runtime/client").DefaultArgs, {
-        omit: import("../generated/internal/prismaNamespace").GlobalOmitConfig | undefined;
-    }>;
+    }, never, import("../generated/runtime/client.js").DefaultArgs, import("../generated/index.js").Prisma.PrismaClientOptions>;
 }
 //# sourceMappingURL=user.repository.d.ts.map
